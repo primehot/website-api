@@ -1,19 +1,24 @@
 package web.api.controller;
 
-import org.apache.commons.io.IOUtils;
-import org.springframework.http.*;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import web.api.domain.arcticle.news.NewsTopic;
 import web.api.dto.PageableDto;
+import web.api.dto.TopicDto;
 import web.api.dto.news.NewsArticleDto;
-import web.api.dto.woman.WomanArticleDto;
 import web.api.service.NewsArticleService;
 
-import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by oleht on 14.10.2018
@@ -54,10 +59,17 @@ public class NewsController {
         return ResponseEntity.ok().headers(headers).contentType(MediaType.IMAGE_JPEG).body(image);
     }
 
-    @GetMapping("/news/topic/{id}")
+    @GetMapping("/news/topics/{id}")
     @ResponseBody
     public Collection<NewsArticleDto> getNewsByTopic(@PathVariable("id") int id) {
         return newsArticleService.getByTopic(id);
+    }
+
+    @GetMapping("/news/topics")
+    @ResponseBody
+    public ResponseEntity<List<TopicDto>> getTopic() {
+        List<TopicDto> list = Arrays.stream(NewsTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(list);
     }
 
     @GetMapping("/news/recommended")

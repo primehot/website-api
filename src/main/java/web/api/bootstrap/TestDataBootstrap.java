@@ -64,7 +64,7 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             entity.setTitle("News number " + i);
             entity.setNewsTopic(NewsTopic.POLITICS);
             entity.setContent(lorem);
-            entity.setContent("HOT " + i);
+            entity.setHotContent("HOT " + i);
             addImage(entity, "classpath:pictures/news/article.jpg");
 
             news.add(entity);
@@ -80,7 +80,7 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             entity.setTitle("Main News number " + i);
             entity.setNewsTopic(NewsTopic.TECHNOLOGY);
             entity.setContent(lorem);
-            entity.setContent("HOT " + i);
+            entity.setHotContent("HOT " + i);
             entity.setMain(true);
             addImage(entity, "classpath:pictures/news/main.jpg");
 
@@ -97,7 +97,7 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             entity.setTitle("News number " + i);
             entity.setNewsTopic(WomanTopic.SEX);
             entity.setContent(lorem);
-            entity.setContent("HOT " + i);
+            entity.setHotContent("HOT " + i);
             addImage(entity, "classpath:pictures/woman/article.jpg");
 
             womanArticles.add(entity);
@@ -113,7 +113,7 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             entity.setTitle("News number " + i);
             entity.setNewsTopic(WomanTopic.HOLIDAY);
             entity.setContent(lorem);
-            entity.setContent("HOT " + i);
+            entity.setHotContent("HOT " + i);
             entity.setMain(true);
             addImage(entity, "classpath:pictures/woman/main.jpg");
 

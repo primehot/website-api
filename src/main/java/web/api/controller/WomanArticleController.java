@@ -1,19 +1,21 @@
 package web.api.controller;
 
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.PageableDto;
+import web.api.dto.TopicDto;
 import web.api.dto.woman.WomanArticleDto;
 import web.api.service.WomanArticleService;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by oleht on 14.10.2018
@@ -41,7 +43,7 @@ public class WomanArticleController {
 
     @GetMapping("/woman/{id}")
     @ResponseBody
-    public WomanArticleDto getWomanArticleById(@PathVariable("page") long id) {
+    public WomanArticleDto getWomanArticleById(@PathVariable("id") long id) {
         return womanArticleService.getById(id);
     }
 
@@ -52,6 +54,13 @@ public class WomanArticleController {
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
 
         return new ResponseEntity<>(image, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/woman/topics")
+    @ResponseBody
+    public ResponseEntity<List<TopicDto>> getTopic() {
+        List<TopicDto> list = Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(list);
     }
 
     @GetMapping("/woman/topic/{id}")
