@@ -29,25 +29,31 @@ public class WomanArticleController {
         this.womanArticleService = womanArticleService;
     }
 
-    @GetMapping("/woman")
+    @GetMapping("/women")
     @ResponseBody
     public PageableDto getWomanPage(@RequestParam("page") int page, @RequestParam("size") int size) {
         return womanArticleService.getPage(page, size);
     }
 
-    @GetMapping("/woman/main")
+    @GetMapping("/women/by-topics/{id}")
+    @ResponseBody
+    public PageableDto getWomanTopicPage(@PathVariable("id") int id, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return womanArticleService.getTopicPage(id, page, size);
+    }
+
+    @GetMapping("/women/main")
     @ResponseBody
     public WomanArticleDto getWomanMainArticle() {
         return womanArticleService.getMain();
     }
 
-    @GetMapping("/woman/{id}")
+    @GetMapping("/women/{id}")
     @ResponseBody
     public WomanArticleDto getWomanArticleById(@PathVariable("id") long id) {
         return womanArticleService.getById(id);
     }
 
-    @GetMapping("/woman/{id}/image")
+    @GetMapping("/women/{id}/image")
     public ResponseEntity<byte[]> getWomanArticleImageById(@PathVariable("id") long id) {
         byte[] image = womanArticleService.getArticleImage(id);
         HttpHeaders headers = new HttpHeaders();
@@ -56,20 +62,13 @@ public class WomanArticleController {
         return new ResponseEntity<>(image, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/woman/topics")
+    @GetMapping("/women/topics")
     @ResponseBody
-    public ResponseEntity<List<TopicDto>> getTopic() {
-        List<TopicDto> list = Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(list);
+    public List<TopicDto> getTopic() {
+        return Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
     }
 
-    @GetMapping("/woman/topic/{id}")
-    @ResponseBody
-    public Collection<WomanArticleDto> getWomanByTopic(@PathVariable("page") int id) {
-        return womanArticleService.getByTopic(id);
-    }
-
-    @GetMapping("/woman/recommended")
+    @GetMapping("/women/recommended")
     @ResponseBody
     public Collection<WomanArticleDto> getWomanRecommended() {
         return womanArticleService.getRecommended();

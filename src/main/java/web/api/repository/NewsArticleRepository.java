@@ -1,5 +1,7 @@
 package web.api.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +19,11 @@ public interface NewsArticleRepository extends PagingAndSortingRepository<NewsAr
 
     Optional<NewsArticleEntity> findFirstByOrderByCreationDateAsc();
 
-//    @Query("SELECT a.image from NewsArticleEntity a where a.id = :articleId")
-//    Optional<Byte[]> findArticleImageById(@Param("articleId") long articleId);
+    @Query("SELECT a.image from NewsArticleEntity a where a.id = :articleId")
+    Optional<Byte[]> findArticleImageById(@Param("articleId") long articleId);
 
+    @Query("Select n from NewsArticleEntity n "
+            + "where n.newsTopic = :topicId order by n.creationDate")
+    Page<NewsArticleEntity> findAllByNewsTopic(@Param("topicId") Integer topicId,
+                                               Pageable pageable);
 }

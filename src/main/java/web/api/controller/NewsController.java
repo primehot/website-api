@@ -38,6 +38,12 @@ public class NewsController {
         return newsArticleService.getPage(page, size);
     }
 
+    @GetMapping("/news/by-topics/{id}")
+    @ResponseBody
+    public PageableDto getNewsTopicPage(@PathVariable("id") int id, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return newsArticleService.getTopicPage(id, page, size);
+    }
+
     @GetMapping("/news/main")
     @ResponseBody
     public NewsArticleDto getNewsMain() {
@@ -59,17 +65,10 @@ public class NewsController {
         return ResponseEntity.ok().headers(headers).contentType(MediaType.IMAGE_JPEG).body(image);
     }
 
-    @GetMapping("/news/topics/{id}")
-    @ResponseBody
-    public Collection<NewsArticleDto> getNewsByTopic(@PathVariable("id") int id) {
-        return newsArticleService.getByTopic(id);
-    }
-
     @GetMapping("/news/topics")
     @ResponseBody
-    public ResponseEntity<List<TopicDto>> getTopic() {
-        List<TopicDto> list = Arrays.stream(NewsTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(list);
+    public List<TopicDto> getTopic() {
+        return Arrays.stream(NewsTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
     }
 
     @GetMapping("/news/recommended")

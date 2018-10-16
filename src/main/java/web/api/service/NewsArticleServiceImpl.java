@@ -66,12 +66,16 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public PageableDto<NewsArticleDto> getTopicPage(int topicId, int page, int size) {
+        Page<NewsArticleEntity> result = newsArticleRepository.findAllByNewsTopic(topicId, PageRequest.of(page, size));
+
+        return new PageableDto<>(result.getContent().stream().map(e -> newsArticleEntityToDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
+    }
+
+    @Override
     public Collection<NewsArticleDto> getRecommended() {
         return null;
     }
 
-    @Override
-    public Collection<NewsArticleDto> getByTopic(Integer i) {
-        return newsArticleRepository.findByNewsTopic(i).stream().map(item -> newsArticleEntityToDto.convert(item)).collect(Collectors.toList());
-    }
 }

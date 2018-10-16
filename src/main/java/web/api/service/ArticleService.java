@@ -15,6 +15,6 @@ public interface ArticleService <E extends AbstractEntity, D extends AbstractDto
     D getById(Long id);
     D getMain();
     PageableDto<D> getPage(int page, int size);
+    PageableDto<D> getTopicPage(int topicId, int page, int size);
     Collection<D> getRecommended();
-    Collection<D> getByTopic(Integer i);
 }

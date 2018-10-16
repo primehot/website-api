@@ -3,9 +3,12 @@ package web.api.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.woman.WomanArticleEntityToDto;
+import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.dto.PageableDto;
+import web.api.dto.news.NewsArticleDto;
 import web.api.dto.woman.WomanArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.WomanArticleRepository;
@@ -57,8 +60,17 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageableDto<WomanArticleDto> getPage(int page, int size) {
         Page<WomanArticleEntity> result = womanArticleRepository.findAll(PageRequest.of(page, size));
+
+        return new PageableDto<>(result.getContent().stream().map(e -> womanArticleEntityToDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageableDto<WomanArticleDto> getTopicPage(int topicId, int page, int size) {
+        Page<WomanArticleEntity> result = womanArticleRepository.findAllByWomanTopic(topicId, PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> womanArticleEntityToDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -68,8 +80,4 @@ public class WomanArticleServiceImpl implements WomanArticleService {
         return null;
     }
 
-    @Override
-    public Collection<WomanArticleDto> getByTopic(Integer i) {
-        return womanArticleRepository.findByWomanTopic(i).stream().map(item -> womanArticleEntityToDto.convert(item)).collect(Collectors.toList());
-    }
 }
