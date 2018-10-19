@@ -20,6 +20,8 @@ public interface WomanArticleRepository extends PagingAndSortingRepository<Woman
 
     Optional<WomanArticleEntity> findFirstByOrderByCreationDateAsc();
 
+    Collection<WomanArticleEntity> findTop10ByOrderByCreationDateAsc();
+
     @Query("SELECT a.image from WomanArticleEntity a where a.id = :articleId")
     Optional<Byte[]> findArticleImageById(@Param("articleId") long articleId);
 

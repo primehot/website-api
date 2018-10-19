@@ -5,16 +5,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.woman.WomanArticleEntityToDto;
-import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
+import web.api.domain.arcticle.woman.WomanTopic;
+import web.api.dto.NavigationBarDto;
 import web.api.dto.PageableDto;
-import web.api.dto.news.NewsArticleDto;
+import web.api.dto.ShortArticleDto;
+import web.api.dto.TopicDto;
 import web.api.dto.woman.WomanArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.WomanArticleRepository;
 import web.api.util.ImageUtil;
+import web.api.util.ShortArticleUtil;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -73,6 +78,20 @@ public class WomanArticleServiceImpl implements WomanArticleService {
         Page<WomanArticleEntity> result = womanArticleRepository.findAllByWomanTopic(topicId, PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> womanArticleEntityToDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
+    }
+
+    @Override
+    public NavigationBarDto getNavigationBarData() {
+        List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
+        List<WomanArticleDto> top10 = womanArticleRepository.findTop10ByOrderByCreationDateAsc().stream().map(e -> womanArticleEntityToDto.convert(e)).collect(Collectors.toList());
+        List<ShortArticleDto> shortArticles = top10.subList(2,9).stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutToShort(e.getContent()))).collect(Collectors.toList());
+
+        NavigationBarDto<WomanArticleDto, ShortArticleDto> navigationBarDto = new NavigationBarDto<>();
+        navigationBarDto.setTopics(topics);
+        navigationBarDto.setArticles(top10.subList(0,2));
+        navigationBarDto.setSeeAlso(shortArticles);
+
+        return navigationBarDto;
     }
 
     @Override

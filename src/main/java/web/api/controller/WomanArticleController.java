@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import web.api.domain.arcticle.woman.WomanTopic;
+import web.api.dto.NavigationBarDto;
 import web.api.dto.PageableDto;
 import web.api.dto.TopicDto;
+import web.api.dto.news.NewsArticleDto;
 import web.api.dto.woman.WomanArticleDto;
 import web.api.service.WomanArticleService;
 
@@ -65,7 +67,13 @@ public class WomanArticleController {
     @GetMapping("/women/topics")
     @ResponseBody
     public List<TopicDto> getTopic() {
-        return Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
+        return null;
+    }
+
+    @GetMapping("/women/navbar")
+    @ResponseBody
+    public NavigationBarDto getNavBarData() {
+        return womanArticleService.getNavigationBarData();
     }
 
     @GetMapping("/women/recommended")

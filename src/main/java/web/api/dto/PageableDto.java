@@ -12,7 +12,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PageableDto<T extends AbstractDto> {
+public class PageableDto <T extends AbstractDto> {
     private Collection<T> items;
     int totalPages;
     long totalElements;

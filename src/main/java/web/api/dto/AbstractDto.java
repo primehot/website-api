@@ -8,6 +8,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AbstractDto<T extends Number> {
+public abstract class AbstractDto<T extends Number> {
     private T id;
 }
