@@ -84,12 +84,16 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     public NavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
         List<WomanArticleDto> top10 = womanArticleRepository.findTop10ByOrderByCreationDateAsc().stream().map(e -> womanArticleEntityToDto.convert(e)).collect(Collectors.toList());
-        List<ShortArticleDto> shortArticles = top10.subList(2,9).stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutToShort(e.getContent()))).collect(Collectors.toList());
+
+        List<WomanArticleDto> articles = top10.subList(0, 2);
+        articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
+        List<ShortArticleDto> shortArticles = top10.subList(2,10).stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
 
         NavigationBarDto<WomanArticleDto, ShortArticleDto> navigationBarDto = new NavigationBarDto<>();
         navigationBarDto.setTopics(topics);
-        navigationBarDto.setArticles(top10.subList(0,2));
-        navigationBarDto.setSeeAlso(shortArticles);
+        navigationBarDto.setArticles(articles);
+        navigationBarDto.setSeeAlso(shortArticles.subList(0,4));
+        navigationBarDto.setMostCommented(shortArticles.subList(4,8));
 
         return navigationBarDto;
     }

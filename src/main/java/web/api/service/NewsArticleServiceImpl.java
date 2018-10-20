@@ -85,12 +85,16 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     public NavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(NewsTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
         List<NewsArticleDto> top10 = newsArticleRepository.findTop10ByOrderByCreationDateAsc().stream().map(e -> newsArticleEntityToDto.convert(e)).collect(Collectors.toList());
-        List<ShortArticleDto> shortArticles = top10.subList(2,9).stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutToShort(e.getContent()))).collect(Collectors.toList());
+
+        List<NewsArticleDto> articles = top10.subList(0, 2);
+        articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
+        List<ShortArticleDto> shortArticles = top10.subList(2,10).stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
 
         NavigationBarDto<NewsArticleDto, ShortArticleDto> navigationBarDto = new NavigationBarDto<>();
         navigationBarDto.setTopics(topics);
-        navigationBarDto.setArticles(top10.subList(0,2));
-        navigationBarDto.setSeeAlso(shortArticles);
+        navigationBarDto.setArticles(articles);
+        navigationBarDto.setSeeAlso(shortArticles.subList(0,4));
+        navigationBarDto.setMostCommented(shortArticles.subList(4,8));
 
         return navigationBarDto;
     }

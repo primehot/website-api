@@ -8,8 +8,19 @@ import java.util.stream.Collectors;
  */
 public class ShortArticleUtil {
 
-    public static String cutToShort(String content) {
-        String[] list = content.substring(0, 120).split(" ");
+    public static String cutArticleContent(String content) {
+        return cutToShort(content, 120);
+    }
+
+    public static String cutShortContent(String content) {
+        return cutToShort(content, 60);
+    }
+
+    private static String cutToShort(String content, int howLong) {
+        if(content==null || content.isEmpty()) {
+            return "";
+        }
+        String[] list = content.substring(0, howLong).split(" ");
         list[list.length - 1] = "...";
         return Arrays.stream(list).collect(Collectors.joining(" "));
     }

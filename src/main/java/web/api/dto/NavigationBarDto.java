@@ -14,4 +14,5 @@ public class NavigationBarDto <A extends AbstractArticleDto, S extends ShortArti
     List<TopicDto> topics;
     List<A> articles;
     List<S> seeAlso;
+    List<S> mostCommented;
 }
