@@ -17,6 +17,9 @@ import web.api.repository.WomanArticleRepository;
 import web.api.util.ImageUtil;
 import web.api.util.ShortArticleUtil;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -29,18 +32,18 @@ import java.util.stream.Collectors;
 @Service
 public class WomanArticleServiceImpl implements WomanArticleService {
 
-    private WomanArticleEntityToDto womanArticleEntityToDto;
+    private WomanArticleEntityToDto toDto;
     private WomanArticleRepository womanArticleRepository;
 
-    public WomanArticleServiceImpl(WomanArticleEntityToDto womanArticleEntityToDto, WomanArticleRepository womanArticleRepository) {
-        this.womanArticleEntityToDto = womanArticleEntityToDto;
+    public WomanArticleServiceImpl(WomanArticleEntityToDto toDto, WomanArticleRepository womanArticleRepository) {
+        this.toDto = toDto;
         this.womanArticleRepository = womanArticleRepository;
     }
 
     @Override
     public byte[] getArticleImage(Long articleId) {
         Optional<WomanArticleEntity> item = womanArticleRepository.findById(articleId);
-        if(item.isPresent()) {
+        if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
         throw new NotFoundException("Not found WomanArticle with id: " + articleId);
@@ -49,8 +52,8 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     public WomanArticleDto getById(Long id) {
         Optional<WomanArticleEntity> item = womanArticleRepository.findById(id);
-        if(item.isPresent()) {
-            return womanArticleEntityToDto.convert(item.get());
+        if (item.isPresent()) {
+            return toDto.convert(item.get());
         }
         throw new NotFoundException("Not found WomanArticle with id: " + id);
     }
@@ -58,8 +61,8 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     public WomanArticleDto getMain() {
         Optional<WomanArticleEntity> item = womanArticleRepository.findFirstByOrderByCreationDateAsc();
-        if(item.isPresent()) {
-            return womanArticleEntityToDto.convert(item.get());
+        if (item.isPresent()) {
+            return toDto.convert(item.get());
         }
         throw new NotFoundException("Not found main WomanArticle");
     }
@@ -69,7 +72,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     public PageableDto<WomanArticleDto> getPage(int page, int size) {
         Page<WomanArticleEntity> result = womanArticleRepository.findAll(PageRequest.of(page, size));
 
-        return new PageableDto<>(result.getContent().stream().map(e -> womanArticleEntityToDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
+        return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
 
     @Override
@@ -77,29 +80,42 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     public PageableDto<WomanArticleDto> getTopicPage(int topicId, int page, int size) {
         Page<WomanArticleEntity> result = womanArticleRepository.findAllByWomanTopic(topicId, PageRequest.of(page, size));
 
-        return new PageableDto<>(result.getContent().stream().map(e -> womanArticleEntityToDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
+        return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
 
     @Override
     public NavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
-        List<WomanArticleDto> top10 = womanArticleRepository.findTop10ByOrderByCreationDateAsc().stream().map(e -> womanArticleEntityToDto.convert(e)).collect(Collectors.toList());
+        List<WomanArticleDto> top10 = womanArticleRepository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
+                .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<WomanArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
-        List<ShortArticleDto> shortArticles = top10.subList(2,10).stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
+        List<ShortArticleDto> shortArticles = top10.subList(2, 10)
+                .stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
 
         NavigationBarDto<WomanArticleDto, ShortArticleDto> navigationBarDto = new NavigationBarDto<>();
         navigationBarDto.setTopics(topics);
         navigationBarDto.setArticles(articles);
-        navigationBarDto.setSeeAlso(shortArticles.subList(0,4));
-        navigationBarDto.setMostCommented(shortArticles.subList(4,8));
+        navigationBarDto.setSeeAlso(shortArticles.subList(0, 4));
+        navigationBarDto.setMostCommented(shortArticles.subList(4, 8));
 
         return navigationBarDto;
     }
 
     @Override
-    public Collection<WomanArticleDto> getRecommended() {
+    public Collection<ShortArticleDto> getRecommended() {
+        Instant i = Instant.now().minus(recommendedFromDay, ChronoUnit.DAYS);
+        Timestamp dateBefore = Timestamp.from(i);
+
+        List<WomanArticleEntity> recommended = womanArticleRepository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
+        List<ShortArticleDto> result = recommended.stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
+
+        return result;
+    }
+
+    @Override
+    public Collection<WomanArticleDto> getLast() {
         return null;
     }
 

@@ -21,5 +21,6 @@ public class AbstractArticleEntity <T extends Number> extends AbstractEntity<T> 
     @Lob
     private Byte[] image;
     private Boolean main = false;
+    private Long timesVisited = 0L;
 
 }

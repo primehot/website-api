@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.dto.NavigationBarDto;
 import web.api.dto.PageableDto;
+import web.api.dto.ShortArticleDto;
 import web.api.dto.TopicDto;
 import web.api.dto.news.NewsArticleDto;
 import web.api.service.NewsArticleService;
@@ -80,7 +81,7 @@ public class NewsController {
 
     @GetMapping("/news/recommended")
     @ResponseBody
-    public Collection<NewsArticleDto> getNewsRecommended() {
+    public Collection<ShortArticleDto> getNewsRecommended() {
         return newsArticleService.getRecommended();
     }
 }

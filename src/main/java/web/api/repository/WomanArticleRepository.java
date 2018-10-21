@@ -5,10 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 
+import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,17 +17,18 @@ import java.util.Optional;
  */
 public interface WomanArticleRepository extends PagingAndSortingRepository<WomanArticleEntity, Long> {
 
-    Collection<WomanArticleEntity> findByWomanTopic(Integer topic);
-
     Optional<WomanArticleEntity> findFirstByOrderByCreationDateAsc();
 
-    Collection<WomanArticleEntity> findTop10ByOrderByCreationDateAsc();
+    Collection<WomanArticleEntity> findTop10ByOrderByCreationDateAscTimesVisitedAsc();
+
+    @Query("SELECT n from WomanArticleEntity n where n.creationDate > :dateBefore order by n.timesVisited, n.creationDate")
+    List<WomanArticleEntity> getRecommended(@Param("dateBefore") Timestamp dateBefore, Pageable pageable);
 
     @Query("SELECT a.image from WomanArticleEntity a where a.id = :articleId")
     Optional<Byte[]> findArticleImageById(@Param("articleId") long articleId);
 
     @Query("Select n from WomanArticleEntity n "
-            + "where n.womanTopic = :topicId order by n.creationDate")
+            + "where n.womanTopic = :topicId order by n.creationDate, n.timesVisited")
     Page<WomanArticleEntity> findAllByWomanTopic(@Param("topicId") Integer topicId,
                                                  Pageable pageable);
 
