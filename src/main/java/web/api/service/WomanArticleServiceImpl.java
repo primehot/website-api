@@ -33,16 +33,16 @@ import java.util.stream.Collectors;
 public class WomanArticleServiceImpl implements WomanArticleService {
 
     private WomanArticleEntityToDto toDto;
-    private WomanArticleRepository womanArticleRepository;
+    private WomanArticleRepository repository;
 
-    public WomanArticleServiceImpl(WomanArticleEntityToDto toDto, WomanArticleRepository womanArticleRepository) {
+    public WomanArticleServiceImpl(WomanArticleEntityToDto toDto, WomanArticleRepository repository) {
         this.toDto = toDto;
-        this.womanArticleRepository = womanArticleRepository;
+        this.repository = repository;
     }
 
     @Override
     public byte[] getArticleImage(Long articleId) {
-        Optional<WomanArticleEntity> item = womanArticleRepository.findById(articleId);
+        Optional<WomanArticleEntity> item = repository.findById(articleId);
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -51,7 +51,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     public WomanArticleDto getById(Long id) {
-        Optional<WomanArticleEntity> item = womanArticleRepository.findById(id);
+        Optional<WomanArticleEntity> item = repository.findById(id);
         if (item.isPresent()) {
             return toDto.convert(item.get());
         }
@@ -60,7 +60,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     public WomanArticleDto getMain() {
-        Optional<WomanArticleEntity> item = womanArticleRepository.findFirstByOrderByCreationDateAsc();
+        Optional<WomanArticleEntity> item = repository.findFirstByOrderByCreationDateAsc();
         if (item.isPresent()) {
             return toDto.convert(item.get());
         }
@@ -70,7 +70,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     @Transactional(readOnly = true)
     public PageableDto<WomanArticleDto> getPage(int page, int size) {
-        Page<WomanArticleEntity> result = womanArticleRepository.findAll(PageRequest.of(page, size));
+        Page<WomanArticleEntity> result = repository.findAll(PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -78,7 +78,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     @Transactional(readOnly = true)
     public PageableDto<WomanArticleDto> getTopicPage(int topicId, int page, int size) {
-        Page<WomanArticleEntity> result = womanArticleRepository.findAllByWomanTopic(topicId, PageRequest.of(page, size));
+        Page<WomanArticleEntity> result = repository.findAllByWomanTopic(topicId, PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -86,21 +86,21 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     public NavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
-        List<WomanArticleDto> top10 = womanArticleRepository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
+        List<WomanArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<WomanArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
+                .stream().map(e -> new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
 
-        NavigationBarDto<WomanArticleDto, ShortArticleDto> navigationBarDto = new NavigationBarDto<>();
-        navigationBarDto.setTopics(topics);
-        navigationBarDto.setArticles(articles);
-        navigationBarDto.setSeeAlso(shortArticles.subList(0, 4));
-        navigationBarDto.setMostCommented(shortArticles.subList(4, 8));
+        NavigationBarDto<WomanArticleDto, ShortArticleDto> dto = new NavigationBarDto<>();
+        dto.setTopics(topics);
+        dto.setArticles(articles);
+        dto.setSeeAlso(shortArticles.subList(0, 4));
+        dto.setMostCommented(shortArticles.subList(4, 8));
 
-        return navigationBarDto;
+        return dto;
     }
 
     @Override
@@ -108,15 +108,16 @@ public class WomanArticleServiceImpl implements WomanArticleService {
         Instant i = Instant.now().minus(recommendedFromDay, ChronoUnit.DAYS);
         Timestamp dateBefore = Timestamp.from(i);
 
-        List<WomanArticleEntity> recommended = womanArticleRepository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
-        List<ShortArticleDto> result = recommended.stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
+        List<WomanArticleEntity> recommended = repository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
 
-        return result;
+        return recommended.stream()
+                .map(e -> new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent())))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<WomanArticleDto> getLast() {
-        return null;
+    public Collection<ShortArticleDto> getNewest() {
+        return repository.findTop4ByOrderByCreationDateAsc().stream()
+                .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent())).collect(Collectors.toList());
     }
-
 }

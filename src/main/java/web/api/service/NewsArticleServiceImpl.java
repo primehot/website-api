@@ -30,16 +30,16 @@ import java.util.stream.Collectors;
 public class NewsArticleServiceImpl implements NewsArticleService {
 
     private NewsArticleEntityToDto toDto;
-    private NewsArticleRepository newsArticleRepository;
+    private NewsArticleRepository repository;
 
-    public NewsArticleServiceImpl(NewsArticleEntityToDto newsArticleEntityToDto, NewsArticleRepository newsArticleRepository) {
+    public NewsArticleServiceImpl(NewsArticleEntityToDto newsArticleEntityToDto, NewsArticleRepository repository) {
         this.toDto = newsArticleEntityToDto;
-        this.newsArticleRepository = newsArticleRepository;
+        this.repository = repository;
     }
 
     @Override
     public byte[] getArticleImage(Long articleId) {
-        Optional<NewsArticleEntity> item = newsArticleRepository.findById(articleId);
+        Optional<NewsArticleEntity> item = repository.findById(articleId);
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -48,7 +48,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public NewsArticleDto getById(Long id) {
-        Optional<NewsArticleEntity> item = newsArticleRepository.findById(id);
+        Optional<NewsArticleEntity> item = repository.findById(id);
         if (item.isPresent()) {
             return toDto.convert(item.get());
         }
@@ -57,7 +57,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public NewsArticleDto getMain() {
-        Optional<NewsArticleEntity> item = newsArticleRepository.findFirstByOrderByCreationDateAscTimesVisitedAsc();
+        Optional<NewsArticleEntity> item = repository.findFirstByOrderByCreationDateAscTimesVisitedAsc();
         if (item.isPresent()) {
             return toDto.convert(item.get());
         }
@@ -67,7 +67,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Override
     @Transactional(readOnly = true)
     public PageableDto<NewsArticleDto> getPage(int page, int size) {
-        Page<NewsArticleEntity> result = newsArticleRepository.findAll(PageRequest.of(page, size));
+        Page<NewsArticleEntity> result = repository.findAll(PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -75,7 +75,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Override
     @Transactional(readOnly = true)
     public PageableDto<NewsArticleDto> getTopicPage(int topicId, int page, int size) {
-        Page<NewsArticleEntity> result = newsArticleRepository.findAllByNewsTopic(topicId, PageRequest.of(page, size));
+        Page<NewsArticleEntity> result = repository.findAllByNewsTopic(topicId, PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -83,21 +83,21 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Override
     public NavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(NewsTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
-        List<NewsArticleDto> top10 = newsArticleRepository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
+        List<NewsArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<NewsArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
+                .stream().map(e -> new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
 
-        NavigationBarDto<NewsArticleDto, ShortArticleDto> navigationBarDto = new NavigationBarDto<>();
-        navigationBarDto.setTopics(topics);
-        navigationBarDto.setArticles(articles);
-        navigationBarDto.setSeeAlso(shortArticles.subList(0, 4));
-        navigationBarDto.setMostCommented(shortArticles.subList(4, 8));
+        NavigationBarDto<NewsArticleDto, ShortArticleDto> dto = new NavigationBarDto<>();
+        dto.setTopics(topics);
+        dto.setArticles(articles);
+        dto.setSeeAlso(shortArticles.subList(0, 4));
+        dto.setMostCommented(shortArticles.subList(4, 8));
 
-        return navigationBarDto;
+        return dto;
     }
 
     @Override
@@ -105,14 +105,16 @@ public class NewsArticleServiceImpl implements NewsArticleService {
         Instant i = Instant.now().minus(recommendedFromDay, ChronoUnit.DAYS);
         Timestamp dateBefore = Timestamp.from(i);
 
-        List<NewsArticleEntity> recommended = newsArticleRepository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
-        List<ShortArticleDto> result = recommended.stream().map(e -> new ShortArticleDto(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
-        return result;
+        List<NewsArticleEntity> recommended = repository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
+        return recommended.stream()
+                .map(e -> new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent())))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<NewsArticleDto> getLast() {
-        return null;
+    public Collection<ShortArticleDto> getNewest() {
+        return repository.findTop4ByOrderByCreationDateAsc().stream()
+                .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent())).collect(Collectors.toList());
     }
 
 }

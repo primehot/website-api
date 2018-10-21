@@ -28,6 +28,7 @@ public class NewsArticleEntityToDto implements Converter<NewsArticleEntity, News
         dto.setContent(entity.getContent());
         dto.setTopic(NewsTopic.getById(entity.getNewsTopic()).getName());
         dto.setHotContent(entity.getHotContent());
+        dto.setTimesVisited(entity.getTimesVisited());
 
         return dto;
     }

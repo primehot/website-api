@@ -26,6 +26,7 @@ public class WomanArticleEntityToDto implements Converter<WomanArticleEntity, Wo
         dto.setContent(entity.getContent());
         dto.setTopic(WomanTopic.getById(entity.getWomanTopic()).getName());
         dto.setHotContent(entity.getHotContent());
+        dto.setTimesVisited(entity.getTimesVisited());
 
         return dto;
     }

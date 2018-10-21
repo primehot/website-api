@@ -21,6 +21,8 @@ public interface WomanArticleRepository extends PagingAndSortingRepository<Woman
 
     Collection<WomanArticleEntity> findTop10ByOrderByCreationDateAscTimesVisitedAsc();
 
+    Collection<WomanArticleEntity> findTop4ByOrderByCreationDateAsc();
+
     @Query("SELECT n from WomanArticleEntity n where n.creationDate > :dateBefore order by n.timesVisited, n.creationDate")
     List<WomanArticleEntity> getRecommended(@Param("dateBefore") Timestamp dateBefore, Pageable pageable);
 

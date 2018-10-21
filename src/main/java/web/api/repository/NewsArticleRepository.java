@@ -24,6 +24,8 @@ public interface NewsArticleRepository extends PagingAndSortingRepository<NewsAr
 
     Collection<NewsArticleEntity> findTop10ByOrderByCreationDateAscTimesVisitedAsc();
 
+    Collection<NewsArticleEntity> findTop4ByOrderByCreationDateAsc();
+
     @Query("SELECT a.image from NewsArticleEntity a where a.id = :articleId")
     Optional<Byte[]> findArticleImageById(@Param("articleId") long articleId);
 
