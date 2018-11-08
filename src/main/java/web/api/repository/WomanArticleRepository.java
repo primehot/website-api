@@ -33,5 +33,4 @@ public interface WomanArticleRepository extends PagingAndSortingRepository<Woman
             + "where n.womanTopic = :topicId order by n.creationDate, n.timesVisited")
     Page<WomanArticleEntity> findAllByWomanTopic(@Param("topicId") Integer topicId,
                                                  Pageable pageable);
-
 }
