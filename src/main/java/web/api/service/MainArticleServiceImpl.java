@@ -2,9 +2,9 @@ package web.api.service;
 
 import org.springframework.stereotype.Service;
 import web.api.dto.AbstractArticleDto;
-import web.api.dto.MainDto;
-import web.api.dto.ShortArticleDto;
-import web.api.dto.news.NewsArticleDto;
+import web.api.dto.unit.MainPageDto;
+import web.api.dto.unit.ShortArticleDto;
+import web.api.dto.unit.news.NewsArticleDto;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,16 +26,16 @@ public class MainArticleServiceImpl implements MainArticleService {
     }
 
     @Override
-    public MainDto getMainDto() {
+    public MainPageDto getMainDto() {
 
-        MainDto mainDto = new MainDto();
-        setMainArticleWithItemsTo(mainDto);
-        setRecommendedTo(mainDto);
+        MainPageDto mainPageDto = new MainPageDto();
+        setMainArticleWithItemsTo(mainPageDto);
+        setRecommendedTo(mainPageDto);
 
-        return mainDto;
+        return mainPageDto;
     }
 
-    private void setMainArticleWithItemsTo(MainDto dto) {
+    private void setMainArticleWithItemsTo(MainPageDto dto) {
         Collection<NewsArticleDto> newsArticles = newsArticleService.getPage(0, 30).getItems();
 
         ArrayList<AbstractArticleDto> mainArticles = new ArrayList<>();
@@ -49,9 +49,9 @@ public class MainArticleServiceImpl implements MainArticleService {
         dto.setMainItems(mainArticles.stream().map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent())).collect(Collectors.toList()));
     }
 
-    private void setRecommendedTo(MainDto dto) {
-        Collection<ShortArticleDto> news = newsArticleService.getRecommended();
-        Collection<ShortArticleDto> women = womanArticleService.getRecommended();
+    private void setRecommendedTo(MainPageDto dto) {
+        Collection<ShortArticleDto> news = newsArticleService.getAdditionalArticles().getRecommended();
+        Collection<ShortArticleDto> women = womanArticleService.getAdditionalArticles().getRecommended();
 
         dto.setRecommendedNews(news);
         dto.setRecommendedWomen(women);

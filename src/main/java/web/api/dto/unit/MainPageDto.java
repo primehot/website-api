@@ -1,4 +1,4 @@
-package web.api.dto;
+package web.api.dto.unit;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.util.Collection;
  */
 @Getter
 @Setter
-public class MainDto {
+public class MainPageDto {
     private ShortArticleDto mainArticle;
     private Collection<ShortArticleDto> mainItems;
     private Collection<ShortArticleDto> recommendedNews;

@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import web.api.domain.arcticle.news.NewsTopic;
-import web.api.dto.NavigationBarDto;
-import web.api.dto.PageableDto;
-import web.api.dto.ShortArticleDto;
-import web.api.dto.TopicDto;
-import web.api.dto.news.NewsArticleDto;
+import web.api.dto.component.AdditionalArticlesDto;
+import web.api.dto.component.NavigationBarDto;
+import web.api.dto.unit.PageableDto;
+import web.api.dto.unit.ShortArticleDto;
+import web.api.dto.unit.TopicDto;
+import web.api.dto.unit.news.NewsArticleDto;
 import web.api.service.NewsArticleService;
 
 import java.util.Arrays;
@@ -79,9 +80,9 @@ public class NewsController {
         return newsArticleService.getNavigationBarData();
     }
 
-    @GetMapping("/news/recommended")
+    @GetMapping("/news/additional")
     @ResponseBody
-    public Collection<ShortArticleDto> getNewsRecommended() {
-        return newsArticleService.getRecommended();
+    public AdditionalArticlesDto getNewsRecommended() {
+        return newsArticleService.getAdditionalArticles();
     }
 }

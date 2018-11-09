@@ -5,7 +5,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
-import web.api.dto.woman.WomanArticleDto;
+import web.api.dto.unit.woman.WomanArticleDto;
 
 /**
  * Created by oleht on 12.10.2018

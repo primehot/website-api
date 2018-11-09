@@ -5,7 +5,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import web.api.domain.dream_book.DreamBookEntity;
-import web.api.dto.dream.DreamBookDto;
+import web.api.dto.unit.dream.DreamBookDto;
 
 
 /**

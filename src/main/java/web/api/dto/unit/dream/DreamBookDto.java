@@ -1,7 +1,6 @@
-package web.api.dto.dream;
+package web.api.dto.unit.dream;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import web.api.dto.AbstractDto;
 

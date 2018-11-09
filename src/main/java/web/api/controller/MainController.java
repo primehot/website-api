@@ -3,7 +3,7 @@ package web.api.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import web.api.dto.MainDto;
+import web.api.dto.unit.MainPageDto;
 import web.api.service.MainArticleService;
 
 /**
@@ -20,7 +20,7 @@ public class MainController {
 
     @GetMapping("/main")
     @ResponseBody
-    public MainDto getMainData() {
+    public MainPageDto getMainData() {
         return mainArticleService.getMainDto();
     }
 }

@@ -1,4 +1,4 @@
-package web.api.dto.news;
+package web.api.dto.unit.dream;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,6 @@ import web.api.dto.AbstractArticleDto;
  */
 @Setter
 @Getter
-public class NewsArticleDto extends AbstractArticleDto<Long> {
+public class DreamBookArticleDto extends AbstractArticleDto<Long> {
     private String title;
-    private String topic;
 }

@@ -1,4 +1,4 @@
-package web.api.dto.woman;
+package web.api.dto.unit.woman;
 
 import lombok.Getter;
 import lombok.Setter;

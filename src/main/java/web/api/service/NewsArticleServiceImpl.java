@@ -7,8 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.news.NewsArticleEntityToDto;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
-import web.api.dto.*;
-import web.api.dto.news.NewsArticleDto;
+import web.api.dto.component.AdditionalArticlesDto;
+import web.api.dto.component.NavigationBarDto;
+import web.api.dto.unit.PageableDto;
+import web.api.dto.unit.ShortArticleDto;
+import web.api.dto.unit.TopicDto;
+import web.api.dto.unit.news.NewsArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.NewsArticleRepository;
 import web.api.util.ImageUtil;
@@ -101,7 +105,16 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     }
 
     @Override
-    public Collection<ShortArticleDto> getRecommended() {
+    @Transactional(readOnly = true)
+    public AdditionalArticlesDto getAdditionalArticles() {
+        AdditionalArticlesDto<ShortArticleDto> dto = new AdditionalArticlesDto<>();
+        dto.setRecommended(getRecommended());
+        dto.setNewest(getNewest());
+
+        return dto;
+    }
+
+    private Collection<ShortArticleDto> getRecommended() {
         Instant i = Instant.now().minus(recommendedFromDay, ChronoUnit.DAYS);
         Timestamp dateBefore = Timestamp.from(i);
 
@@ -111,8 +124,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Collection<ShortArticleDto> getNewest() {
+    private Collection<ShortArticleDto> getNewest() {
         return repository.findTop4ByOrderByCreationDateAsc().stream()
                 .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent())).collect(Collectors.toList());
     }

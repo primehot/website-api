@@ -1,8 +1,9 @@
-package web.api.dto;
+package web.api.dto.unit;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import web.api.dto.AbstractDto;
 
 import java.util.Collection;
 

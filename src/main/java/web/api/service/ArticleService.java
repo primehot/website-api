@@ -1,9 +1,10 @@
 package web.api.service;
 
 import web.api.dto.AbstractDto;
-import web.api.dto.NavigationBarDto;
-import web.api.dto.PageableDto;
-import web.api.dto.ShortArticleDto;
+import web.api.dto.component.AdditionalArticlesDto;
+import web.api.dto.component.NavigationBarDto;
+import web.api.dto.unit.PageableDto;
+import web.api.dto.unit.ShortArticleDto;
 
 import java.util.Collection;
 
@@ -28,7 +29,5 @@ public interface ArticleService<D extends AbstractDto> {
 
     NavigationBarDto getNavigationBarData();
 
-    Collection<ShortArticleDto> getRecommended();
-
-    Collection<ShortArticleDto> getNewest();
+    AdditionalArticlesDto getAdditionalArticles();
 }

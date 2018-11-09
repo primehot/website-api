@@ -7,11 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.woman.WomanArticleEntityToDto;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
-import web.api.dto.NavigationBarDto;
-import web.api.dto.PageableDto;
-import web.api.dto.ShortArticleDto;
-import web.api.dto.TopicDto;
-import web.api.dto.woman.WomanArticleDto;
+import web.api.dto.component.AdditionalArticlesDto;
+import web.api.dto.component.NavigationBarDto;
+import web.api.dto.unit.PageableDto;
+import web.api.dto.unit.ShortArticleDto;
+import web.api.dto.unit.TopicDto;
+import web.api.dto.unit.woman.WomanArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.WomanArticleRepository;
 import web.api.util.ImageUtil;
@@ -104,7 +105,16 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     }
 
     @Override
-    public Collection<ShortArticleDto> getRecommended() {
+    @Transactional(readOnly = true)
+    public AdditionalArticlesDto getAdditionalArticles() {
+        AdditionalArticlesDto<ShortArticleDto> dto = new AdditionalArticlesDto<>();
+        dto.setRecommended(getRecommended());
+        dto.setNewest(getNewest());
+
+        return dto;
+    }
+
+    private Collection<ShortArticleDto> getRecommended() {
         Instant i = Instant.now().minus(recommendedFromDay, ChronoUnit.DAYS);
         Timestamp dateBefore = Timestamp.from(i);
 
@@ -115,8 +125,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Collection<ShortArticleDto> getNewest() {
+    private Collection<ShortArticleDto> getNewest() {
         return repository.findTop4ByOrderByCreationDateAsc().stream()
                 .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent())).collect(Collectors.toList());
     }

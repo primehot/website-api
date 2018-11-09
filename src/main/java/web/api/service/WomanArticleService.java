@@ -1,6 +1,6 @@
 package web.api.service;
 
-import web.api.dto.woman.WomanArticleDto;
+import web.api.dto.unit.woman.WomanArticleDto;
 
 /**
  * Created by oleht on 14.10.2018
