@@ -46,8 +46,11 @@ public class MainArticleServiceImpl implements MainArticleService {
         AbstractArticleDto mainArticle = mainArticles.get(0);
         mainArticles.remove(mainArticle);
 
-        dto.setMainArticle(new ShortArticleDto<>(mainArticle.getId(), mainArticle.getHotContent(), ArticleCategoryDto.getNewsCategory()));
-        dto.setMainItems(mainArticles.stream().map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory())).collect(Collectors.toList()));
+        dto.setMainArticle(new ShortArticleDto<>(mainArticle.getId(), mainArticle.getHotContent(), ArticleCategoryDto.getNewsCategory(),
+                mainArticle.getHashTags()));
+        dto.setMainItems(mainArticles.stream()
+                .map(e -> new ShortArticleDto(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory(), e.getHashTags()))
+                .collect(Collectors.toList()));
     }
 
     private void setRecommendedTo(MainPageDto dto) {

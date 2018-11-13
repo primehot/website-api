@@ -1,6 +1,7 @@
 package web.api.domain.arcticle;
 
 import lombok.Getter;
+import web.api.dto.unit.HashTagDto;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -25,5 +26,10 @@ public enum HashTag {
     public static HashTag getById(Integer id) {
         Optional<HashTag> o = Arrays.stream(HashTag.values()).filter(t -> t.id.equals(id)).findAny();
         return o.orElse(null);
+    }
+
+    public static HashTagDto buildById(Integer id) {
+        Optional<HashTag> o = Arrays.stream(HashTag.values()).filter(t -> t.id.equals(id)).findAny();
+        return o.map(hashTag -> new HashTagDto(hashTag.getId(), hashTag.getName())).orElse(null);
     }
 }

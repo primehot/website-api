@@ -19,14 +19,4 @@ public class AbstractArticleDto<T extends Number> extends AbstractArticleCategor
     private String content;
     private String topic;
     private Long timesVisited;
-    private List<HashTagDto> hashTags = new ArrayList<>();
-
-    public void addHashTag(HashTagDto dto) {
-        hashTags.add(dto);
-    }
-
-    public void addHashTag(Integer tagID) {
-        HashTag tag = HashTag.getById(tagID);
-        hashTags.add(new HashTagDto(tagID, tag.getName()));
-    }
 }

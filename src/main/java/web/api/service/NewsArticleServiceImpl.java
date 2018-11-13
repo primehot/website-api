@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.news.NewsArticleEntityToDto;
-import web.api.domain.arcticle.ArticleCategory;
+import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.dto.component.AdditionalArticlesDto;
@@ -114,11 +114,14 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     }
 
     private ShortArticleDto buildShortArticle(NewsArticleDto e) {
-        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory());
+        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory(), e.getHashTags());
     }
 
     private ShortArticleDto buildShortArticle(NewsArticleEntity e) {
-        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory());
+        return new ShortArticleDto<>(e.getId(),
+                ShortArticleUtil.cutShortContent(e.getContent()),
+                ArticleCategoryDto.getNewsCategory(), e.getHashTags().stream().map(HashTag::buildById)
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -143,7 +146,9 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     private Collection<ShortArticleDto> getNewest() {
         return repository.findTop5ByOrderByCreationDateAsc().stream()
-                .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory())).collect(Collectors.toList());
+                .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory(),
+                        e.getHashTags().stream().map(HashTag::buildById)
+                                .collect(Collectors.toList()))).collect(Collectors.toList());
     }
 
 }
