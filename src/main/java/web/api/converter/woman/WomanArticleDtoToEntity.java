@@ -3,6 +3,7 @@ package web.api.converter.woman;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.unit.woman.WomanArticleDto;
@@ -23,8 +24,9 @@ public class WomanArticleDtoToEntity implements Converter<WomanArticleDto, Woman
         WomanArticleEntity entity = new WomanArticleEntity();
         entity.setTitle(dto.getTitle());
         entity.setContent(dto.getContent());
-        entity.setNewsTopic(WomanTopic.getByName(dto.getTopic()));
+        entity.setWomanTopic(WomanTopic.getByName(dto.getTopic()));
         entity.setHotContent(dto.getHotContent());
+        dto.getHashTags().forEach(ht -> entity.addHashTag(HashTag.getById(ht.getId())));
 
         return entity;
     }

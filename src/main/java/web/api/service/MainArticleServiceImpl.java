@@ -2,6 +2,7 @@ package web.api.service;
 
 import org.springframework.stereotype.Service;
 import web.api.dto.AbstractArticleDto;
+import web.api.dto.unit.ArticleCategoryDto;
 import web.api.dto.unit.MainPageDto;
 import web.api.dto.unit.ShortArticleDto;
 import web.api.dto.unit.news.NewsArticleDto;
@@ -45,8 +46,8 @@ public class MainArticleServiceImpl implements MainArticleService {
         AbstractArticleDto mainArticle = mainArticles.get(0);
         mainArticles.remove(mainArticle);
 
-        dto.setMainArticle(new ShortArticleDto<>(mainArticle.getId(), mainArticle.getHotContent()));
-        dto.setMainItems(mainArticles.stream().map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent())).collect(Collectors.toList()));
+        dto.setMainArticle(new ShortArticleDto<>(mainArticle.getId(), mainArticle.getHotContent(), ArticleCategoryDto.getNewsCategory()));
+        dto.setMainItems(mainArticles.stream().map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory())).collect(Collectors.toList()));
     }
 
     private void setRecommendedTo(MainPageDto dto) {

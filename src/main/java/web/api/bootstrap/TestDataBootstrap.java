@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 import web.api.domain.arcticle.AbstractArticleEntity;
+import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
@@ -16,7 +17,6 @@ import web.api.repository.WomanArticleRepository;
 import web.api.util.ImageUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -63,6 +63,8 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             NewsArticleEntity entity = new NewsArticleEntity();
             entity.setTitle("News number " + i);
             entity.setNewsTopic(NewsTopic.POLITICS);
+            entity.addHashTag(HashTag.INSTAGRAM);
+            entity.addHashTag(HashTag.RELIGY);
             entity.setContent(lorem);
             entity.setHotContent("HOT " + i);
             addImage(entity, "classpath:pictures/news/article.jpg");
@@ -79,6 +81,8 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             NewsArticleEntity entity = new NewsArticleEntity();
             entity.setTitle("Main News number " + i);
             entity.setNewsTopic(NewsTopic.TECHNOLOGY);
+            entity.addHashTag(HashTag.INSTAGRAM);
+            entity.addHashTag(HashTag.MURDER);
             entity.setContent(lorem);
             entity.setHotContent("HOT " + i);
             entity.setMain(true);
@@ -95,9 +99,10 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
         for (int i = 0; i < 20; i++) {
             WomanArticleEntity entity = new WomanArticleEntity();
             entity.setTitle("News number " + i);
-            entity.setNewsTopic(WomanTopic.SEX);
+            entity.setWomanTopic(WomanTopic.SEX);
             entity.setContent(lorem);
             entity.setHotContent("HOT " + i);
+            entity.addHashTag(HashTag.MURDER);
             addImage(entity, "classpath:pictures/woman/article.jpg");
 
             womanArticles.add(entity);
@@ -111,10 +116,12 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
         for (int i = 0; i < 2; i++) {
             WomanArticleEntity entity = new WomanArticleEntity();
             entity.setTitle("News number " + i);
-            entity.setNewsTopic(WomanTopic.HOLIDAY);
+            entity.setWomanTopic(WomanTopic.HOLIDAY);
             entity.setContent(lorem);
             entity.setHotContent("HOT " + i);
             entity.setMain(true);
+            entity.addHashTag(HashTag.INSTAGRAM);
+            entity.addHashTag(HashTag.RELIGY);
             addImage(entity, "classpath:pictures/woman/main.jpg");
 
             womanArticles.add(entity);

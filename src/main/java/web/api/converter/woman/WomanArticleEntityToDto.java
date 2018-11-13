@@ -3,8 +3,10 @@ package web.api.converter.woman;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
+import web.api.dto.unit.ArticleCategoryDto;
 import web.api.dto.unit.woman.WomanArticleDto;
 
 /**
@@ -27,6 +29,8 @@ public class WomanArticleEntityToDto implements Converter<WomanArticleEntity, Wo
         dto.setTopic(WomanTopic.getById(entity.getWomanTopic()).getName());
         dto.setHotContent(entity.getHotContent());
         dto.setTimesVisited(entity.getTimesVisited());
+        entity.getHashTags().forEach(dto::addHashTag);
+        dto.setArticleCategory(new ArticleCategoryDto(ArticleCategory.WOMEN.getId(), ArticleCategory.WOMEN.getName()));
 
         return dto;
     }

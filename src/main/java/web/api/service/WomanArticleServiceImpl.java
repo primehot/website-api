@@ -9,6 +9,7 @@ import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.NavigationBarDto;
+import web.api.dto.unit.ArticleCategoryDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.ShortArticleDto;
 import web.api.dto.unit.TopicDto;
@@ -93,7 +94,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
         List<WomanArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(e -> new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()))).collect(Collectors.toList());
+                .stream().map(this::buildShortArticle).collect(Collectors.toList());
 
         NavigationBarDto<WomanArticleDto, ShortArticleDto> dto = new NavigationBarDto<>();
         dto.setTopics(topics);
@@ -114,6 +115,21 @@ public class WomanArticleServiceImpl implements WomanArticleService {
         return dto;
     }
 
+    @Override
+    public PageableDto<WomanArticleDto> getHashTagPage(int hashTagId, int page, int size) {
+        Page<WomanArticleEntity> result = repository.findAllByHashTag(hashTagId, PageRequest.of(page, size));
+
+        return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
+    }
+
+    private ShortArticleDto buildShortArticle(WomanArticleDto e) {
+        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getWomanCategory());
+    }
+
+    private ShortArticleDto buildShortArticle(WomanArticleEntity e) {
+        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory());
+    }
+
     private Collection<ShortArticleDto> getRecommended() {
         Instant i = Instant.now().minus(recommendedFromDay, ChronoUnit.DAYS);
         Timestamp dateBefore = Timestamp.from(i);
@@ -121,12 +137,12 @@ public class WomanArticleServiceImpl implements WomanArticleService {
         List<WomanArticleEntity> recommended = repository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
 
         return recommended.stream()
-                .map(e -> new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent())))
+                .map(this::buildShortArticle)
                 .collect(Collectors.toList());
     }
 
     private Collection<ShortArticleDto> getNewest() {
         return repository.findTop4ByOrderByCreationDateAsc().stream()
-                .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent())).collect(Collectors.toList());
+                .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getWomanCategory())).collect(Collectors.toList());
     }
 }

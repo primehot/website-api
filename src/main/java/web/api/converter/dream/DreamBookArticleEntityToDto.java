@@ -4,7 +4,9 @@ import lombok.Synchronized;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.dream.DreamBookArticleEntity;
+import web.api.dto.unit.ArticleCategoryDto;
 import web.api.dto.unit.dream.DreamBookArticleDto;
 
 
@@ -27,6 +29,8 @@ public class DreamBookArticleEntityToDto implements Converter<DreamBookArticleEn
         dto.setTitle(entity.getTitle());
         dto.setContent(entity.getContent());
         dto.setHotContent(entity.getHotContent());
+        entity.getHashTags().forEach(dto::addHashTag);
+        dto.setArticleCategory(new ArticleCategoryDto(ArticleCategory.DREAM.getId(), ArticleCategory.DREAM.getName()));
 
         return dto;
     }

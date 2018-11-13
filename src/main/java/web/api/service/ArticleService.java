@@ -1,5 +1,6 @@
 package web.api.service;
 
+import web.api.dto.AbstractArticleCategoryDto;
 import web.api.dto.AbstractDto;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.NavigationBarDto;
@@ -11,9 +12,9 @@ import java.util.Collection;
 /**
  * Created by oleht on 12.10.2018
  */
-public interface ArticleService<D extends AbstractDto> {
+public interface ArticleService<D extends AbstractArticleCategoryDto> {
 
-    Integer recommendedSize = 10;
+    Integer recommendedSize = 5;
     Integer recommendedFromDay = 7;
     Integer newestSize = 4;
 
@@ -26,6 +27,8 @@ public interface ArticleService<D extends AbstractDto> {
     PageableDto<D> getPage(int page, int size);
 
     PageableDto<D> getTopicPage(int topicId, int page, int size);
+
+    PageableDto<D> getHashTagPage(int hashTagId, int page, int size);
 
     NavigationBarDto getNavigationBarData();
 

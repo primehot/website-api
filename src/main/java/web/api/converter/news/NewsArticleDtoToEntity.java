@@ -3,6 +3,7 @@ package web.api.converter.news;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.dto.unit.news.NewsArticleDto;
@@ -25,6 +26,7 @@ public class NewsArticleDtoToEntity implements Converter<NewsArticleDto, NewsArt
         entity.setContent(dto.getContent());
         entity.setNewsTopic(NewsTopic.getByName(dto.getTopic()));
         entity.setHotContent(dto.getHotContent());
+        dto.getHashTags().forEach(ht -> entity.addHashTag(HashTag.getById(ht.getId())));
 
         return entity;
     }

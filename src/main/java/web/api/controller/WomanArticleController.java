@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.NavigationBarDto;
 import web.api.dto.unit.PageableDto;
@@ -40,6 +41,14 @@ public class WomanArticleController {
     public PageableDto getWomanTopicPage(@PathVariable("id") int id, @RequestParam("page") int page, @RequestParam("size") int size) {
         return womanArticleService.getTopicPage(id, page, size);
     }
+
+    @GetMapping("/women/topics/{id}")
+    @ResponseBody
+    public TopicDto getTopic(@PathVariable("id") int id) {
+        WomanTopic topic = WomanTopic.getById(id);
+        return new TopicDto(topic.getId(), topic.toString(), topic.getName());
+    }
+
 
     @GetMapping("/women/main")
     @ResponseBody

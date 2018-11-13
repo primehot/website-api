@@ -18,7 +18,7 @@ public class WomanArticleEntity extends AbstractArticleEntity<Long> {
     private String title;
     private Integer womanTopic;
 
-    public void setNewsTopic(WomanTopic womanTopic) {
+    public void setWomanTopic(WomanTopic womanTopic) {
         this.womanTopic = womanTopic.getId();
     }
 }

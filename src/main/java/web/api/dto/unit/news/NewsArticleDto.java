@@ -11,5 +11,4 @@ import web.api.dto.AbstractArticleDto;
 @Getter
 public class NewsArticleDto extends AbstractArticleDto<Long> {
     private String title;
-    private String topic;
 }

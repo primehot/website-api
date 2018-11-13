@@ -4,8 +4,10 @@ import lombok.Synchronized;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
+import web.api.dto.unit.ArticleCategoryDto;
 import web.api.dto.unit.news.NewsArticleDto;
 
 /**
@@ -29,6 +31,8 @@ public class NewsArticleEntityToDto implements Converter<NewsArticleEntity, News
         dto.setTopic(NewsTopic.getById(entity.getNewsTopic()).getName());
         dto.setHotContent(entity.getHotContent());
         dto.setTimesVisited(entity.getTimesVisited());
+        entity.getHashTags().forEach(dto::addHashTag);
+        dto.setArticleCategory(new ArticleCategoryDto(ArticleCategory.NEWS.getId(), ArticleCategory.NEWS.getName()));
 
         return dto;
     }

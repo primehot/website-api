@@ -27,11 +27,11 @@ import java.util.stream.Collectors;
  * Created by oleht on 14.10.2018
  */
 @Controller
-public class NewsController {
+public class NewsArticleController {
 
     private NewsArticleService newsArticleService;
 
-    public NewsController(NewsArticleService newsArticleService) {
+    public NewsArticleController(NewsArticleService newsArticleService) {
         this.newsArticleService = newsArticleService;
     }
 
@@ -45,6 +45,13 @@ public class NewsController {
     @ResponseBody
     public PageableDto getNewsTopicPage(@PathVariable("id") int id, @RequestParam("page") int page, @RequestParam("size") int size) {
         return newsArticleService.getTopicPage(id, page, size);
+    }
+
+    @GetMapping("/news/topics/{id}")
+    @ResponseBody
+    public TopicDto getTopic(@PathVariable("id") int id) {
+        NewsTopic topic = NewsTopic.getById(id);
+        return new TopicDto(topic.getId(), topic.toString(), topic.getName());
     }
 
     @GetMapping("/news/main")

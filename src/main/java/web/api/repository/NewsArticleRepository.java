@@ -24,7 +24,7 @@ public interface NewsArticleRepository extends PagingAndSortingRepository<NewsAr
 
     Collection<NewsArticleEntity> findTop10ByOrderByCreationDateAscTimesVisitedAsc();
 
-    Collection<NewsArticleEntity> findTop4ByOrderByCreationDateAsc();
+    Collection<NewsArticleEntity> findTop5ByOrderByCreationDateAsc();
 
     @Query("SELECT a.image from NewsArticleEntity a where a.id = :articleId")
     Optional<Byte[]> findArticleImageById(@Param("articleId") long articleId);
@@ -32,5 +32,10 @@ public interface NewsArticleRepository extends PagingAndSortingRepository<NewsAr
     @Query("Select n from NewsArticleEntity n "
             + "where n.newsTopic = :topicId order by n.creationDate, n.timesVisited")
     Page<NewsArticleEntity> findAllByNewsTopic(@Param("topicId") Integer topicId,
+                                               Pageable pageable);
+
+    @Query("Select n from NewsArticleEntity n "
+            + "where :hashTag in (n.hashTags) order by n.creationDate, n.timesVisited")
+    Page<NewsArticleEntity> findAllByHashTag(@Param("hashTag") Integer hashTag,
                                                Pageable pageable);
 }
