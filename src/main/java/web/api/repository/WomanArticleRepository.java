@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 
 import java.sql.Timestamp;
@@ -35,8 +34,8 @@ public interface WomanArticleRepository extends PagingAndSortingRepository<Woman
     Page<WomanArticleEntity> findAllByWomanTopic(@Param("topicId") Integer topicId,
                                                  Pageable pageable);
 
-    @Query("Select n from WomanArticleEntity n "
-            + "where :hashTag in (n.hashTags) order by n.creationDate, n.timesVisited")
-    Page<WomanArticleEntity> findAllByHashTag(@Param("hashTag") Integer hashTag,
-                                             Pageable pageable);
+    @Query("SELECT DISTINCT n from WomanArticleEntity n "
+            + " where n.hashTags LIKE %:wrappedHashTag% ")
+    Page<WomanArticleEntity> findAllByHashTag(@Param("wrappedHashTag") String wrappedHashTag,
+                                              Pageable pageable);
 }

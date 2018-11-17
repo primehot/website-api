@@ -1,13 +1,9 @@
 package web.api.service;
 
 import web.api.dto.AbstractArticleCategoryDto;
-import web.api.dto.AbstractDto;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.NavigationBarDto;
 import web.api.dto.unit.PageableDto;
-import web.api.dto.unit.ShortArticleDto;
-
-import java.util.Collection;
 
 /**
  * Created by oleht on 12.10.2018
@@ -16,7 +12,7 @@ public interface ArticleService<D extends AbstractArticleCategoryDto> {
 
     Integer recommendedSize = 5;
     Integer recommendedFromDay = 7;
-    Integer newestSize = 4;
+    Integer newestSize = 5;
 
     byte[] getArticleImage(Long articleId);
 

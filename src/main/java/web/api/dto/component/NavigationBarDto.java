@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class NavigationBarDto <A extends AbstractArticleDto, S extends ShortArticleDto> {
+public class NavigationBarDto<A extends AbstractArticleDto, S extends ShortArticleDto> {
     List<TopicDto> topics;
     List<A> articles;
     List<S> seeAlso;

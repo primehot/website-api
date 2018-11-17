@@ -1,6 +1,9 @@
 package web.api.controller;
 
-import org.springframework.http.*;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,12 +13,10 @@ import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.NavigationBarDto;
 import web.api.dto.unit.PageableDto;
-import web.api.dto.unit.ShortArticleDto;
 import web.api.dto.unit.TopicDto;
 import web.api.dto.unit.woman.WomanArticleDto;
 import web.api.service.WomanArticleService;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -85,7 +86,7 @@ public class WomanArticleController {
 
     @GetMapping("/women/additional")
     @ResponseBody
-    public AdditionalArticlesDto getWomanRecommended() {
+    public AdditionalArticlesDto getAdditionalData() {
         return womanArticleService.getAdditionalArticles();
     }
 }

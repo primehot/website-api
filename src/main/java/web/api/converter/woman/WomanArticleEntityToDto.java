@@ -8,6 +8,7 @@ import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.unit.ArticleCategoryDto;
 import web.api.dto.unit.woman.WomanArticleDto;
+import web.api.util.HashTagUtil;
 
 /**
  * Created by oleht on 12.10.2018
@@ -29,7 +30,7 @@ public class WomanArticleEntityToDto implements Converter<WomanArticleEntity, Wo
         dto.setTopic(WomanTopic.getById(entity.getWomanTopic()).getName());
         dto.setHotContent(entity.getHotContent());
         dto.setTimesVisited(entity.getTimesVisited());
-        entity.getHashTags().forEach(dto::addHashTag);
+        HashTagUtil.getHashTags(entity).forEach(dto::addHashTag);
         dto.setArticleCategory(new ArticleCategoryDto(ArticleCategory.WOMEN.getId(), ArticleCategory.WOMEN.getName()));
 
         return dto;

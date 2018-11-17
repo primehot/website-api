@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import web.api.dto.AbstractArticleCategoryDto;
-import web.api.dto.AbstractArticleDto;
-import web.api.dto.AbstractDto;
 
 import java.util.Collection;
 
@@ -15,7 +13,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PageableDto <T extends AbstractArticleCategoryDto> {
+public class PageableDto<T extends AbstractArticleCategoryDto> {
     private Collection<T> items;
     private int totalPages;
     private long totalElements;

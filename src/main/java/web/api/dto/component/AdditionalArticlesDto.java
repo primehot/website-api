@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 @Getter
 @Setter
-public class AdditionalArticlesDto <S extends ShortArticleDto> {
+public class AdditionalArticlesDto<S extends ShortArticleDto> {
     private Collection<S> recommended;
     private Collection<S> newest;
 }

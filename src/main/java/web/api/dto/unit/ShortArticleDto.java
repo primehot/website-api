@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import web.api.dto.AbstractArticleCategoryDto;
 
-import java.util.Collection;
 import java.util.List;
 
 /**

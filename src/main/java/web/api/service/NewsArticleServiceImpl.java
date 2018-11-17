@@ -17,6 +17,7 @@ import web.api.dto.unit.TopicDto;
 import web.api.dto.unit.news.NewsArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.NewsArticleRepository;
+import web.api.util.HashTagUtil;
 import web.api.util.ImageUtil;
 import web.api.util.ShortArticleUtil;
 
@@ -88,7 +89,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public PageableDto<NewsArticleDto> getHashTagPage(int hashTagId, int page, int size) {
-        Page<NewsArticleEntity> result = repository.findAllByHashTag(hashTagId, PageRequest.of(page, size));
+        Page<NewsArticleEntity> result = repository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -120,8 +121,9 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     private ShortArticleDto buildShortArticle(NewsArticleEntity e) {
         return new ShortArticleDto<>(e.getId(),
                 ShortArticleUtil.cutShortContent(e.getContent()),
-                ArticleCategoryDto.getNewsCategory(), e.getHashTags().stream().map(HashTag::buildById)
-                .collect(Collectors.toList()));
+                ArticleCategoryDto.getNewsCategory(),
+                HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
+                        .collect(Collectors.toList()));
     }
 
     @Override
@@ -147,7 +149,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     private Collection<ShortArticleDto> getNewest() {
         return repository.findTop5ByOrderByCreationDateAsc().stream()
                 .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory(),
-                        e.getHashTags().stream().map(HashTag::buildById)
+                        HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
                                 .collect(Collectors.toList()))).collect(Collectors.toList());
     }
 

@@ -8,6 +8,7 @@ import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.dream.DreamBookArticleEntity;
 import web.api.dto.unit.ArticleCategoryDto;
 import web.api.dto.unit.dream.DreamBookArticleDto;
+import web.api.util.HashTagUtil;
 
 
 /**
@@ -29,7 +30,7 @@ public class DreamBookArticleEntityToDto implements Converter<DreamBookArticleEn
         dto.setTitle(entity.getTitle());
         dto.setContent(entity.getContent());
         dto.setHotContent(entity.getHotContent());
-        entity.getHashTags().forEach(dto::addHashTag);
+        HashTagUtil.getHashTags(entity).forEach(dto::addHashTag);
         dto.setArticleCategory(new ArticleCategoryDto(ArticleCategory.DREAM.getId(), ArticleCategory.DREAM.getName()));
 
         return dto;

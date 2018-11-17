@@ -17,7 +17,7 @@ public class ShortArticleUtil {
     }
 
     private static String cutToShort(String content, int howLong) {
-        if(content==null || content.isEmpty()) {
+        if (content == null || content.isEmpty()) {
             return "";
         }
         String[] list = content.substring(0, howLong).split(" ");

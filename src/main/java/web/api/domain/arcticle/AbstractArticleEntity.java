@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import web.api.domain.AbstractEntity;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import static web.api.util.HashTagUtil.hashTagSeparator;
+import static web.api.util.HashTagUtil.wrapHashTag;
 
 /**
  * Created by oleht on 14.10.2018
@@ -26,11 +28,15 @@ public class AbstractArticleEntity<T extends Number> extends AbstractEntity<T> {
     private Boolean main = false;
     private Long timesVisited = 0L;
 
-    @ElementCollection(targetClass = Integer.class)
-    private Collection<Integer> hashTags = new ArrayList<>();
+    private String hashTags = "";
 
     public void addHashTag(HashTag hashTag) {
-        this.hashTags.add(hashTag.getId());
+        if (Arrays.stream(this.hashTags.split(hashTagSeparator)).noneMatch(wrapHashTag(hashTag.getId())::equals)) {
+            this.hashTags += wrapHashTag(hashTag.getId()) + hashTagSeparator;
+        }
     }
 
+    public void removeHashTag(HashTag hashTag) {
+        this.hashTags = Arrays.stream(this.hashTags.split(hashTagSeparator)).filter(i -> i.equals(wrapHashTag(hashTag.getId()))).collect(Collectors.joining(hashTagSeparator));
+    }
 }

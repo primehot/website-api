@@ -13,13 +13,11 @@ import web.api.domain.arcticle.news.NewsTopic;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.NavigationBarDto;
 import web.api.dto.unit.PageableDto;
-import web.api.dto.unit.ShortArticleDto;
 import web.api.dto.unit.TopicDto;
 import web.api.dto.unit.news.NewsArticleDto;
 import web.api.service.NewsArticleService;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,7 +87,7 @@ public class NewsArticleController {
 
     @GetMapping("/news/additional")
     @ResponseBody
-    public AdditionalArticlesDto getNewsRecommended() {
+    public AdditionalArticlesDto getAdditionalData() {
         return newsArticleService.getAdditionalArticles();
     }
 }

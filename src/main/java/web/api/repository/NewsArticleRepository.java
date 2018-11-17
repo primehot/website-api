@@ -29,13 +29,13 @@ public interface NewsArticleRepository extends PagingAndSortingRepository<NewsAr
     @Query("SELECT a.image from NewsArticleEntity a where a.id = :articleId")
     Optional<Byte[]> findArticleImageById(@Param("articleId") long articleId);
 
-    @Query("Select n from NewsArticleEntity n "
+    @Query("SELECT n from NewsArticleEntity n "
             + "where n.newsTopic = :topicId order by n.creationDate, n.timesVisited")
     Page<NewsArticleEntity> findAllByNewsTopic(@Param("topicId") Integer topicId,
                                                Pageable pageable);
 
-    @Query("Select n from NewsArticleEntity n "
-            + "where :hashTag in (n.hashTags) order by n.creationDate, n.timesVisited")
-    Page<NewsArticleEntity> findAllByHashTag(@Param("hashTag") Integer hashTag,
-                                               Pageable pageable);
+    @Query("SELECT DISTINCT n from NewsArticleEntity n "
+            + " where n.hashTags LIKE %:wrappedHashTag% ")
+    Page<NewsArticleEntity> findAllByHashTag(@Param("wrappedHashTag") String wrappedHashTag,
+                                             Pageable pageable);
 }

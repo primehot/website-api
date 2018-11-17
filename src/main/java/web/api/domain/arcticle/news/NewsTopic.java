@@ -12,7 +12,7 @@ import java.util.Optional;
 public enum NewsTopic {
     POLITICS(1, "Политика"),
     TECHNOLOGY(2, "Технология");
-    
+
     private final Integer id;
     private final String name;
 

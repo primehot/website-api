@@ -2,7 +2,6 @@ package web.api.domain.arcticle.woman;
 
 import lombok.Getter;
 import lombok.Setter;
-import web.api.domain.AbstractEntity;
 import web.api.domain.arcticle.AbstractArticleEntity;
 
 import javax.persistence.Entity;

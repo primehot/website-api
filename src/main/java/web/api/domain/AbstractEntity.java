@@ -5,7 +5,10 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.sql.Timestamp;
 
 /**
@@ -14,7 +17,7 @@ import java.sql.Timestamp;
 @MappedSuperclass
 @Setter
 @Getter
-public abstract class AbstractEntity <T extends Number> {
+public abstract class AbstractEntity<T extends Number> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
