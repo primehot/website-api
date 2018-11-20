@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.dto.component.AdditionalArticlesDto;
-import web.api.dto.component.NavigationBarDto;
+import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.TopicDto;
 import web.api.dto.unit.news.NewsArticleDto;
@@ -81,7 +81,7 @@ public class NewsArticleController {
 
     @GetMapping("/news/navbar")
     @ResponseBody
-    public NavigationBarDto getNavBarData() {
+    public ArticleNavigationBarDto getNavBarData() {
         return newsArticleService.getNavigationBarData();
     }
 

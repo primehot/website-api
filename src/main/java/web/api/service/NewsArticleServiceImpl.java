@@ -9,7 +9,7 @@ import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.dto.component.AdditionalArticlesDto;
-import web.api.dto.component.NavigationBarDto;
+import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.ArticleCategoryDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.ShortArticleDto;
@@ -95,7 +95,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     }
 
     @Override
-    public NavigationBarDto getNavigationBarData() {
+    public ArticleNavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(NewsTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
         List<NewsArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
@@ -105,7 +105,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
                 .stream().map(this::buildShortArticle).collect(Collectors.toList());
 
-        NavigationBarDto<NewsArticleDto, ShortArticleDto> dto = new NavigationBarDto<>();
+        ArticleNavigationBarDto<NewsArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);
         dto.setArticles(articles);
         dto.setSeeAlso(shortArticles.subList(0, 4));

@@ -9,8 +9,6 @@ import web.api.dto.AbstractDto;
  */
 @Setter
 @Getter
-public class DreamBookDto extends AbstractDto<Long> {
-    private String title;
-    private String content;
-    private String author;
+public class ShortDreamBookDto extends AbstractDto<Long> {
+    private String data;
 }

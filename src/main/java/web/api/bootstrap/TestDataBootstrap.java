@@ -12,6 +12,8 @@ import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
+import web.api.domain.dream_book.DreamBookEntity;
+import web.api.repository.DreamBookRepository;
 import web.api.repository.NewsArticleRepository;
 import web.api.repository.WomanArticleRepository;
 import web.api.util.ImageUtil;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by oleh.tsyupa.
@@ -41,10 +44,12 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
 
     private NewsArticleRepository newsArticleRepository;
     private WomanArticleRepository womanArticleRepository;
+    private DreamBookRepository dreamBookRepository;
 
-    public TestDataBootstrap(NewsArticleRepository newsArticleRepository, WomanArticleRepository womanArticleRepository) {
+    public TestDataBootstrap(NewsArticleRepository newsArticleRepository, WomanArticleRepository womanArticleRepository, DreamBookRepository dreamBookRepository) {
         this.newsArticleRepository = newsArticleRepository;
         this.womanArticleRepository = womanArticleRepository;
+        this.dreamBookRepository = dreamBookRepository;
     }
 
     @Override
@@ -55,6 +60,7 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
         addBasicMainNewsArticle();
         addBasicWomanArticle();
         addBasicMainWomanArticle();
+        addDreamBook();
     }
 
     private void addBasicNewsArticle() {
@@ -139,5 +145,31 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
         } catch (IOException e) {
             log.debug("Error during loading image: " + classpath);
         }
+    }
+
+    private void addDreamBook() {
+        List<DreamBookEntity> dreamBookEntities = new ArrayList<>();
+        addDreamToList("Любовь","Великий мудрец Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Жена","Мислитель Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Дети","Беддтист Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Сем'я","Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Щастье","Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Дом","Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Теплота","Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Душа","Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Ум","Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", lorem, dreamBookEntities);
+
+        this.dreamBookRepository.saveAll(dreamBookEntities);
+    }
+
+    private void addDreamToList(String title, String author, String content, List<DreamBookEntity> dreamBookEntities) {
+        Random r = new Random(200);
+        DreamBookEntity e = new DreamBookEntity();
+        e.setTitle(title);
+        e.setAuthor(author);
+        e.setContent(content);
+        e.setTimesVisited(r.nextLong());
+        dreamBookEntities.add(e);
     }
 }

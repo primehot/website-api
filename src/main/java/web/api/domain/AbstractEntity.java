@@ -29,4 +29,6 @@ public abstract class AbstractEntity<T extends Number> {
     @UpdateTimestamp
     private Timestamp lastModificationDate;
 
+    private Long timesVisited = 0L;
+
 }

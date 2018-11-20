@@ -2,7 +2,7 @@ package web.api.service;
 
 import web.api.dto.AbstractArticleCategoryDto;
 import web.api.dto.component.AdditionalArticlesDto;
-import web.api.dto.component.NavigationBarDto;
+import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;
 
 /**
@@ -26,7 +26,7 @@ public interface ArticleService<D extends AbstractArticleCategoryDto> {
 
     PageableDto<D> getHashTagPage(int hashTagId, int page, int size);
 
-    NavigationBarDto getNavigationBarData();
+    ArticleNavigationBarDto getNavigationBarData();
 
     AdditionalArticlesDto getAdditionalArticles();
 }

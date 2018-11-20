@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.component.AdditionalArticlesDto;
-import web.api.dto.component.NavigationBarDto;
+import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.TopicDto;
 import web.api.dto.unit.woman.WomanArticleDto;
@@ -80,7 +80,7 @@ public class WomanArticleController {
 
     @GetMapping("/women/navbar")
     @ResponseBody
-    public NavigationBarDto getNavBarData() {
+    public ArticleNavigationBarDto getNavBarData() {
         return womanArticleService.getNavigationBarData();
     }
 
