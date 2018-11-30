@@ -1,4 +1,4 @@
-package web.api.dto.unit.dream;
+package web.api.dto.unit;
 
 import lombok.Getter;
 import lombok.Setter;

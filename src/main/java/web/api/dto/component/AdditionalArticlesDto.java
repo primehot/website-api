@@ -2,7 +2,7 @@ package web.api.dto.component;
 
 import lombok.Getter;
 import lombok.Setter;
-import web.api.dto.unit.ShortArticleDto;
+import web.api.dto.unit.article.ShortArticleDto;
 
 import java.util.Collection;
 

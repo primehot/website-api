@@ -5,7 +5,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import web.api.domain.dream_book.DreamBookEntity;
-import web.api.dto.unit.dream.ShortDreamBookDto;
+import web.api.dto.unit.ShortDreamBookDto;
 
 
 /**
@@ -24,7 +24,7 @@ public class DreamBookEntityToShortDto implements Converter<DreamBookEntity, Sho
 
         ShortDreamBookDto dto = new ShortDreamBookDto();
         dto.setId(entity.getId());
-        dto.setData(entity.getTitle());
+        dto.setData(entity.getContent());
 
         return dto;
     }

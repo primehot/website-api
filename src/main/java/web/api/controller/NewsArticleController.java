@@ -14,7 +14,7 @@ import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.TopicDto;
-import web.api.dto.unit.news.NewsArticleDto;
+import web.api.dto.unit.article.NewsArticleDto;
 import web.api.service.NewsArticleService;
 
 import java.util.Arrays;

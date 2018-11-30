@@ -1,8 +1,7 @@
-package web.api.dto.unit.woman;
+package web.api.dto.unit.article;
 
 import lombok.Getter;
 import lombok.Setter;
-import web.api.dto.AbstractArticleDto;
 
 /**
  * Created by oleht on 12.10.2018

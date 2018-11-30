@@ -1,14 +1,20 @@
 package web.api.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import web.api.converter.dream.DreamBookEntityToDto;
 import web.api.converter.dream.DreamBookEntityToShortDto;
+import web.api.domain.dream_book.DreamBookEntity;
 import web.api.dto.component.DreamBookNavigationBarDto;
-import web.api.dto.unit.dream.ShortDreamBookDto;
+import web.api.dto.component.DreamTitlePageDto;
+import web.api.dto.unit.DreamBookDto;
+import web.api.dto.unit.ShortDreamBookDto;
 import web.api.repository.DreamBookRepository;
+import web.api.util.ShortArticleUtil;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -19,21 +25,38 @@ public class DreamBookServiceImpl implements DreamBookService {
 
     private DreamBookRepository dreamBookRepository;
     private DreamBookEntityToShortDto toShortDto;
+    private DreamBookEntityToDto toDto;
 
-    public DreamBookServiceImpl(DreamBookRepository dreamBookRepository, DreamBookEntityToShortDto toShortDto) {
+    public DreamBookServiceImpl(DreamBookRepository dreamBookRepository, DreamBookEntityToShortDto toShortDto, DreamBookEntityToDto toDto) {
         this.dreamBookRepository = dreamBookRepository;
         this.toShortDto = toShortDto;
+        this.toDto = toDto;
     }
 
     @Override
     public DreamBookNavigationBarDto getNavigationBarData() {
-        Collection<String> mainTitles = dreamBookRepository.findMainTitles(PageRequest.of(0, 9)).getContent();
-        Collection<ShortDreamBookDto> topVisited = dreamBookRepository.findTopVisited(PageRequest.of(0, 10)).getContent()
-                .stream().map(toShortDto::convert).collect(Collectors.toList());
+        List<Object[]> mainTitles = dreamBookRepository.findMainTitles(PageRequest.of(0, 9)).getContent();
+        Collection<ShortDreamBookDto> topVisited = dreamBookRepository.findTopVisited(PageRequest.of(0, 9)).getContent()
+                .stream().map(e -> {
+                    ShortDreamBookDto d = toShortDto.convert(e);
+                    d.setData(ShortArticleUtil.cutShortContent(e.getContent()));
+                    return d;
+                }).collect(Collectors.toList());
 
         DreamBookNavigationBarDto dto = new DreamBookNavigationBarDto();
-        dto.setMainTitles(mainTitles);
+        dto.setMainTitles(mainTitles.stream().map(objects -> objects[0].toString()).collect(Collectors.toList()));
         dto.setSeeAlso(topVisited);
+
+        return dto;
+    }
+
+    @Override
+    public DreamTitlePageDto getDataByTitle(String title) {
+        Collection<DreamBookEntity> list = dreamBookRepository.findAllByTitleOrderByCreationDateAscTimesVisitedAsc(title);
+
+        DreamTitlePageDto dto = new DreamTitlePageDto();
+        dto.setDreamBooks(list.stream().map(toDto::convert).collect(Collectors.toList()));
+        dto.setTitle(title);
 
         return dto;
     }

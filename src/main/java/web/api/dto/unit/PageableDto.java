@@ -3,7 +3,7 @@ package web.api.dto.unit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import web.api.dto.AbstractArticleCategoryDto;
+import web.api.dto.unit.article.AbstractArticleCategoryDto;
 
 import java.util.Collection;
 

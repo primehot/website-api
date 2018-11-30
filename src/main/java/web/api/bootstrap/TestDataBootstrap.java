@@ -17,6 +17,7 @@ import web.api.repository.DreamBookRepository;
 import web.api.repository.NewsArticleRepository;
 import web.api.repository.WomanArticleRepository;
 import web.api.util.ImageUtil;
+import web.api.util.ShortArticleUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -149,27 +150,42 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
 
     private void addDreamBook() {
         List<DreamBookEntity> dreamBookEntities = new ArrayList<>();
-        addDreamToList("Любовь","Великий мудрец Олег Цюпа", lorem, dreamBookEntities);
-        addDreamToList("Жена","Мислитель Олег Цюпа", lorem, dreamBookEntities);
-        addDreamToList("Дети","Беддтист Олег Цюпа", lorem, dreamBookEntities);
-        addDreamToList("Сем'я","Олег Цюпа", lorem, dreamBookEntities);
-        addDreamToList("Щастье","Олег Цюпа", lorem, dreamBookEntities);
-        addDreamToList("Дом","Олег Цюпа", lorem, dreamBookEntities);
-        addDreamToList("Теплота","Олег Цюпа", lorem, dreamBookEntities);
-        addDreamToList("Душа","Олег Цюпа", lorem, dreamBookEntities);
-        addDreamToList("Ум","Олег Цюпа", lorem, dreamBookEntities);
-        addDreamToList("Деньги","Олег Цюпа", lorem, dreamBookEntities);
+        addDreamToList("Любовь","Великий мудрец Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Жена","Мислитель Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Дети","Беддтист Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Сем'я","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Щастье","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Дом","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Теплота","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Душа","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Ум","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+
 
         this.dreamBookRepository.saveAll(dreamBookEntities);
     }
 
     private void addDreamToList(String title, String author, String content, List<DreamBookEntity> dreamBookEntities) {
-        Random r = new Random(200);
+        int a = 0; // Начальное значение диапазона - "от"
+        int b = 10; // Конечное значение диапазона - "до"
+
+        long r = a + (long) (Math.random() * b); // Генерация 1-го числа
+
         DreamBookEntity e = new DreamBookEntity();
         e.setTitle(title);
         e.setAuthor(author);
         e.setContent(content);
-        e.setTimesVisited(r.nextLong());
+        e.setTimesVisited(r);
         dreamBookEntities.add(e);
     }
 }

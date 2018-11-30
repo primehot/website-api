@@ -14,7 +14,7 @@ import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.TopicDto;
-import web.api.dto.unit.woman.WomanArticleDto;
+import web.api.dto.unit.article.WomanArticleDto;
 import web.api.service.WomanArticleService;
 
 import java.util.List;

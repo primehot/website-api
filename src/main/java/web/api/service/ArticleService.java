@@ -1,6 +1,6 @@
 package web.api.service;
 
-import web.api.dto.AbstractArticleCategoryDto;
+import web.api.dto.unit.article.AbstractArticleCategoryDto;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;

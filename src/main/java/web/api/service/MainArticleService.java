@@ -1,6 +1,6 @@
 package web.api.service;
 
-import web.api.dto.unit.MainPageDto;
+import web.api.dto.component.MainPageDto;
 
 /**
  * Created by oleht on 21.10.2018

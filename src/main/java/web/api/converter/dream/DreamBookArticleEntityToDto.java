@@ -6,8 +6,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.dream.DreamBookArticleEntity;
-import web.api.dto.unit.ArticleCategoryDto;
-import web.api.dto.unit.dream.DreamBookArticleDto;
+import web.api.dto.unit.article.ArticleCategoryDto;
+import web.api.dto.unit.article.DreamBookArticleDto;
 import web.api.util.HashTagUtil;
 
 

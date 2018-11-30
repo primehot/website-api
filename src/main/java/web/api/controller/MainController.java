@@ -3,7 +3,7 @@ package web.api.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import web.api.dto.unit.MainPageDto;
+import web.api.dto.component.MainPageDto;
 import web.api.service.MainArticleService;
 
 /**

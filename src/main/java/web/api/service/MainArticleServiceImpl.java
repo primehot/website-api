@@ -1,11 +1,11 @@
 package web.api.service;
 
 import org.springframework.stereotype.Service;
-import web.api.dto.AbstractArticleDto;
-import web.api.dto.unit.ArticleCategoryDto;
-import web.api.dto.unit.MainPageDto;
-import web.api.dto.unit.ShortArticleDto;
-import web.api.dto.unit.news.NewsArticleDto;
+import web.api.dto.unit.article.AbstractArticleDto;
+import web.api.dto.unit.article.ArticleCategoryDto;
+import web.api.dto.component.MainPageDto;
+import web.api.dto.unit.article.ShortArticleDto;
+import web.api.dto.unit.article.NewsArticleDto;
 
 import java.util.ArrayList;
 import java.util.Collection;

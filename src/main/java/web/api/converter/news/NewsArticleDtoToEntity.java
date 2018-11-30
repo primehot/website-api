@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
-import web.api.dto.unit.news.NewsArticleDto;
+import web.api.dto.unit.article.NewsArticleDto;
 
 /**
  * Created by oleht on 12.10.2018

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
-import web.api.dto.unit.ArticleCategoryDto;
-import web.api.dto.unit.woman.WomanArticleDto;
+import web.api.dto.unit.article.ArticleCategoryDto;
+import web.api.dto.unit.article.WomanArticleDto;
 import web.api.util.HashTagUtil;
 
 /**

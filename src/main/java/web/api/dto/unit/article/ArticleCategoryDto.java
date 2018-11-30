@@ -1,4 +1,4 @@
-package web.api.dto.unit;
+package web.api.dto.unit.article;
 
 import lombok.Getter;
 import lombok.Setter;
