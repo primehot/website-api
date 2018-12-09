@@ -14,6 +14,8 @@ CREATE TABLE dream_book (
   PRIMARY KEY (id)
 );
 
+CREATE INDEX IF NOT EXISTS dream_book_tsv_idx ON dream_book USING GIST (document_tokens);
+
 -- Dream Book Article
 
 DROP TABLE IF EXISTS dream_book_article;
@@ -32,6 +34,8 @@ CREATE TABLE dream_book_article (
   document_tokens        TSVECTOR,
   PRIMARY KEY (id)
 );
+
+CREATE INDEX IF NOT EXISTS dream_book_article_tsv_idx ON dream_book_article USING GIST (document_tokens);
 
 -- News Article
 
@@ -53,6 +57,8 @@ CREATE TABLE news_article (
   PRIMARY KEY (id)
 );
 
+CREATE INDEX IF NOT EXISTS news_article_tsv_idx ON news_article USING GIST (document_tokens);
+
 -- Woman Article
 
 DROP TABLE IF EXISTS woman_article;
@@ -72,3 +78,5 @@ CREATE TABLE woman_article (
   document_tokens        TSVECTOR,
   PRIMARY KEY (id)
 );
+
+CREATE INDEX IF NOT EXISTS woman_article_tsv_idx ON woman_article USING GIST (document_tokens);

@@ -15,4 +15,6 @@ public interface DreamBookService {
 
     DreamTitlePageDto getDataByTitle(String title);
 
+    List<DreamBookDto> getDreamBooksByPhrase(String phrase);
+
 }

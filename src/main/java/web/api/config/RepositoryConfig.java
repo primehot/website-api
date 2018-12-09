@@ -1,7 +1,8 @@
 package web.api.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Created by oleht on 04.12.2018
@@ -9,4 +10,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 public class RepositoryConfig {
 
+    @Bean
+    public ObjectMapper mapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper;
+    }
 }

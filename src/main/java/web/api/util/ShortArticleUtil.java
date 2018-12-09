@@ -20,7 +20,13 @@ public class ShortArticleUtil {
         if (content == null || content.isEmpty()) {
             return "";
         }
-        String[] list = content.substring(0, howLong).split(" ");
+        String[] list;
+        if(content.length() > howLong) {
+            list = content.substring(0, howLong).split(" ");
+        } else {
+            list = content.split(" ");
+        }
+
         list[list.length - 1] = "...";
         return Arrays.stream(list).collect(Collectors.joining(" "));
     }

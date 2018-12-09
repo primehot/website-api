@@ -4,9 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import web.api.domain.dream_book.DreamBookEntity;
+import web.api.domain.dream_book.DreamBookEntityRankedEntity;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,21 +13,23 @@ import java.util.List;
 /**
  * Created by oleht on 20.11.2018
  */
-@Repository
 public interface DreamBookRepository extends PagingAndSortingRepository<DreamBookEntity, Long> {
 
     Collection<DreamBookEntity> findAllByTitleOrderByCreationDateAscTimesVisitedAsc(String title);
 
-    /**
-     * select distinct county from Event event
-     inner join event.county county
-     order by county.county
-     * @param pageable
-     * @return
-     */
     @Query("SELECT d.title, sum(d.timesVisited) as f from DreamBookEntity as d group by title order by f desc ")
     Page<Object[]> findMainTitles(Pageable pageable);
 
     @Query("SELECT d from DreamBookEntity as d order by d.timesVisited desc ")
     Page<DreamBookEntity> findTopVisited(Pageable pageable);
+
+    @Query(value = "SELECT ts_headline(db.title, q, 'StartSel=<b>, StopSel=</b>') AS title, " +
+            " ts_headline(db.content, q, 'StartSel=<b>, StopSel=</b>') AS content, " +
+            " db.author AS author, " +
+            " ts_rank_cd(db.document_tokens, q) AS rank " +
+            "  FROM dream_book AS db, " +
+            " to_tsquery('russian', ?1) AS q" +
+            "  WHERE db.document_tokens @@ q" +
+            "  ORDER BY rank DESC, db.times_visited DESC LIMIT 30;", nativeQuery = true)
+    List<DreamBookEntityRankedEntity> getByPhrase(String phrase);
 }

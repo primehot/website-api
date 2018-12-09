@@ -150,15 +150,15 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
 
     private void addDreamBook() {
         List<DreamBookEntity> dreamBookEntities = new ArrayList<>();
-        addDreamToList("Любовь","Великий мудрец Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Жена","Мислитель Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Дети","Беддтист Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Сем'я","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Щастье","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Дом","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Теплота","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Душа","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Ум","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Любовь","Великий мудрец Олег Цюпа", "Пристилось то приснилось", dreamBookEntities);
+        addDreamToList("Жена","Мудрец Олег Цюпа", "Жена хорошая", dreamBookEntities);
+        addDreamToList("Дети","Буддист Олег Цюпа", "Значить будут", dreamBookEntities);
+        addDreamToList("Сем'я","Олег Цюпа Аристократ", "Все отлично, не парся", dreamBookEntities);
+        addDreamToList("Щастье","Ум Олега", "Щастя бивает разное", dreamBookEntities);
+        addDreamToList("Дом","Олег Цюпа Супер", "Дом любим", dreamBookEntities);
+        addDreamToList("Теплота","Олег Цюпа Вперед", "Будет дождь", dreamBookEntities);
+        addDreamToList("Душа","Олег Цюпа Красавчик", "Летела на лужами", dreamBookEntities);
+        addDreamToList("Ум","Олег Цюпа Все знает", "Значить не тупой", dreamBookEntities);
 
         addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
         addDreamToList("Деньги","Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);

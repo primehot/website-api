@@ -25,8 +25,8 @@ public class DreamBookController {
 
     @GetMapping("/dream")
     @ResponseBody
-    public List<DreamBookDto> getData() {
-        return null;
+    public List<DreamBookDto> getDataFTS(@RequestParam("phrase") String phrase) {
+        return dreamBookService.getDreamBooksByPhrase(phrase);
     }
 
     @GetMapping("/dream/title")
