@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 public abstract class AbstractEntity<T extends Number> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private T id;
 
     @CreationTimestamp

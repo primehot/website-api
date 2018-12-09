@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import web.api.domain.dream_book.DreamBookEntity;
 
 import java.util.Collection;
@@ -12,6 +14,7 @@ import java.util.List;
 /**
  * Created by oleht on 20.11.2018
  */
+@Repository
 public interface DreamBookRepository extends PagingAndSortingRepository<DreamBookEntity, Long> {
 
     Collection<DreamBookEntity> findAllByTitleOrderByCreationDateAscTimesVisitedAsc(String title);

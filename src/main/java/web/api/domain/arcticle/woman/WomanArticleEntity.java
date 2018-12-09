@@ -5,6 +5,7 @@ import lombok.Setter;
 import web.api.domain.arcticle.AbstractArticleEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by oleht on 12.10.2018
@@ -12,6 +13,7 @@ import javax.persistence.Entity;
 @Entity
 @Setter
 @Getter
+@Table(name = "woman_article")
 public class WomanArticleEntity extends AbstractArticleEntity<Long> {
 
     private String title;

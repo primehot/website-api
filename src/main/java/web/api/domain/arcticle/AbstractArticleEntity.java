@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import web.api.domain.AbstractEntity;
 
-import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -21,9 +20,7 @@ import static web.api.util.HashTagUtil.wrapHashTag;
 public class AbstractArticleEntity<T extends Number> extends AbstractEntity<T> {
 
     private String hotContent;
-    @Lob
     private String content;
-    @Lob
     private Byte[] image;
     private Boolean main = false;
 
