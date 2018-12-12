@@ -9,4 +9,8 @@ public class FTSUtil {
         return phrase.replaceAll(" ", "|");
     }
 
+    public static String and(String phrase) {
+        return phrase.replaceAll(" ", "&");
+    }
+
 }

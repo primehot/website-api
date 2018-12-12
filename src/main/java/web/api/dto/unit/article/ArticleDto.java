@@ -8,7 +8,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AbstractArticleDto<T extends Number> extends AbstractArticleCategoryDto<T> {
+public class ArticleDto extends AbstractArticleCategoryDto<Long> {
+    private String title;
     private String hotContent;
     private String content;
     private String topic;

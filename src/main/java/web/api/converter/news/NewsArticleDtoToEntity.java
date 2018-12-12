@@ -6,17 +6,17 @@ import org.springframework.stereotype.Component;
 import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
-import web.api.dto.unit.article.NewsArticleDto;
+import web.api.dto.unit.article.ArticleDto;
 
 /**
  * Created by oleht on 12.10.2018
  */
 @Component
-public class NewsArticleDtoToEntity implements Converter<NewsArticleDto, NewsArticleEntity> {
+public class NewsArticleDtoToEntity implements Converter<ArticleDto, NewsArticleEntity> {
 
     @Nullable
     @Override
-    public NewsArticleEntity convert(NewsArticleDto dto) {
+    public NewsArticleEntity convert(ArticleDto dto) {
         if (dto == null) {
             return null;
         }

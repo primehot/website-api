@@ -1,4 +1,4 @@
-package web.api.service;
+package web.api.service.article;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,11 +10,11 @@ import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.ArticleNavigationBarDto;
-import web.api.dto.unit.article.ArticleCategoryDto;
 import web.api.dto.unit.PageableDto;
-import web.api.dto.unit.article.ShortArticleDto;
 import web.api.dto.unit.TopicDto;
-import web.api.dto.unit.article.WomanArticleDto;
+import web.api.dto.unit.article.ArticleCategoryDto;
+import web.api.dto.unit.article.ArticleDto;
+import web.api.dto.unit.article.ShortArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.WomanArticleRepository;
 import web.api.util.HashTagUtil;
@@ -54,7 +54,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     }
 
     @Override
-    public WomanArticleDto getById(Long id) {
+    public ArticleDto getById(Long id) {
         Optional<WomanArticleEntity> item = repository.findById(id);
         if (item.isPresent()) {
             return toDto.convert(item.get());
@@ -63,7 +63,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     }
 
     @Override
-    public WomanArticleDto getMain() {
+    public ArticleDto getMain() {
         Optional<WomanArticleEntity> item = repository.findFirstByOrderByCreationDateAsc();
         if (item.isPresent()) {
             return toDto.convert(item.get());
@@ -73,7 +73,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageableDto<WomanArticleDto> getPage(int page, int size) {
+    public PageableDto<ArticleDto> getPage(int page, int size) {
         Page<WomanArticleEntity> result = repository.findAll(PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
@@ -81,7 +81,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageableDto<WomanArticleDto> getTopicPage(int topicId, int page, int size) {
+    public PageableDto<ArticleDto> getTopicPage(int topicId, int page, int size) {
         Page<WomanArticleEntity> result = repository.findAllByWomanTopic(topicId, PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
@@ -90,15 +90,15 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     public ArticleNavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
-        List<WomanArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
+        List<ArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
-        List<WomanArticleDto> articles = top10.subList(0, 2);
+        List<ArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
                 .stream().map(this::buildShortArticle).collect(Collectors.toList());
 
-        ArticleNavigationBarDto<WomanArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
+        ArticleNavigationBarDto<ArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);
         dto.setArticles(articles);
         dto.setSeeAlso(shortArticles.subList(0, 4));
@@ -118,13 +118,13 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     }
 
     @Override
-    public PageableDto<WomanArticleDto> getHashTagPage(int hashTagId, int page, int size) {
+    public PageableDto<ArticleDto> getHashTagPage(int hashTagId, int page, int size) {
         Page<WomanArticleEntity> result = repository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
 
-    private ShortArticleDto buildShortArticle(WomanArticleDto e) {
+    private ShortArticleDto buildShortArticle(ArticleDto e) {
         return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getWomanCategory(), e.getHashTags());
     }
 

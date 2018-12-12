@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import web.api.domain.arcticle.HashTag;
 import web.api.dto.AbstractDto;
-import web.api.dto.unit.article.ArticleCategoryDto;
 import web.api.dto.unit.HashTagDto;
 
 import java.util.ArrayList;

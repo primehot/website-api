@@ -6,17 +6,17 @@ import org.springframework.stereotype.Component;
 import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
-import web.api.dto.unit.article.WomanArticleDto;
+import web.api.dto.unit.article.ArticleDto;
 
 /**
  * Created by oleht on 12.10.2018
  */
 @Component
-public class WomanArticleDtoToEntity implements Converter<WomanArticleDto, WomanArticleEntity> {
+public class WomanArticleDtoToEntity implements Converter<ArticleDto, WomanArticleEntity> {
 
     @Nullable
     @Override
-    public WomanArticleEntity convert(WomanArticleDto dto) {
+    public WomanArticleEntity convert(ArticleDto dto) {
         if (dto == null) {
             return null;
         }

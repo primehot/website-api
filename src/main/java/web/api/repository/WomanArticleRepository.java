@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
+import web.api.domain.arcticle.ArticleRankedProjection;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 
 import java.sql.Timestamp;
@@ -39,4 +39,22 @@ public interface WomanArticleRepository extends PagingAndSortingRepository<Woman
             + " where n.hashTags LIKE %:wrappedHashTag% ")
     Page<WomanArticleEntity> findAllByHashTag(@Param("wrappedHashTag") String wrappedHashTag,
                                               Pageable pageable);
+
+    @Query(
+            value = "SELECT wa.id AS id, " +
+                    " wa.title AS title, " +
+                    " wa.woman_topic AS topic, " +
+                    " wa.hot_content AS hotContent, " +
+                    " wa.hash_tags AS hashTags, " +
+                    " ts_rank_cd(wa.document_tokens, q) AS rank " +
+                    "  FROM woman_article AS wa, " +
+                    " to_tsquery('russian', ?1) AS q" +
+                    "  WHERE wa.document_tokens @@ q" +
+                    "  ORDER BY rank DESC, wa.times_visited DESC",
+            countQuery = "SELECT count(*) " +
+                    "  FROM woman_article AS wa, " +
+                    " to_tsquery('russian', ?1) AS q" +
+                    "  WHERE wa.document_tokens @@ q",
+            nativeQuery = true)
+    Page<ArticleRankedProjection> getByPhrase(String phrase, Pageable pageable);
 }

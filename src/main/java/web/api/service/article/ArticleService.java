@@ -1,14 +1,14 @@
-package web.api.service;
+package web.api.service.article;
 
-import web.api.dto.unit.article.AbstractArticleCategoryDto;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;
+import web.api.dto.unit.article.ArticleDto;
 
 /**
  * Created by oleht on 12.10.2018
  */
-public interface ArticleService<D extends AbstractArticleCategoryDto> {
+public interface ArticleService {
 
     Integer recommendedSize = 5;
     Integer recommendedFromDay = 7;
@@ -16,15 +16,15 @@ public interface ArticleService<D extends AbstractArticleCategoryDto> {
 
     byte[] getArticleImage(Long articleId);
 
-    D getById(Long id);
+    ArticleDto getById(Long id);
 
-    D getMain();
+    ArticleDto getMain();
 
-    PageableDto<D> getPage(int page, int size);
+    PageableDto<ArticleDto> getPage(int page, int size);
 
-    PageableDto<D> getTopicPage(int topicId, int page, int size);
+    PageableDto<ArticleDto> getTopicPage(int topicId, int page, int size);
 
-    PageableDto<D> getHashTagPage(int hashTagId, int page, int size);
+    PageableDto<ArticleDto> getHashTagPage(int hashTagId, int page, int size);
 
     ArticleNavigationBarDto getNavigationBarData();
 

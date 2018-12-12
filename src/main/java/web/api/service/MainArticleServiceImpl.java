@@ -1,11 +1,12 @@
 package web.api.service;
 
 import org.springframework.stereotype.Service;
-import web.api.dto.unit.article.AbstractArticleDto;
-import web.api.dto.unit.article.ArticleCategoryDto;
 import web.api.dto.component.MainPageDto;
+import web.api.dto.unit.article.ArticleCategoryDto;
+import web.api.dto.unit.article.ArticleDto;
 import web.api.dto.unit.article.ShortArticleDto;
-import web.api.dto.unit.article.NewsArticleDto;
+import web.api.service.article.NewsArticleService;
+import web.api.service.article.WomanArticleService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,13 +38,13 @@ public class MainArticleServiceImpl implements MainArticleService {
     }
 
     private void setMainArticleWithItemsTo(MainPageDto dto) {
-        Collection<NewsArticleDto> newsArticles = newsArticleService.getPage(0, 30).getItems();
+        Collection<ArticleDto> newsArticles = newsArticleService.getPage(0, 30).getItems();
 
-        ArrayList<AbstractArticleDto> mainArticles = new ArrayList<>();
+        ArrayList<ArticleDto> mainArticles = new ArrayList<>();
         mainArticles.addAll(newsArticles);
-        mainArticles.sort(Comparator.comparing(AbstractArticleDto::getTimesVisited));
+        mainArticles.sort(Comparator.comparing(ArticleDto::getTimesVisited));
 
-        AbstractArticleDto mainArticle = mainArticles.get(0);
+        ArticleDto mainArticle = mainArticles.get(0);
         mainArticles.remove(mainArticle);
 
         dto.setMainArticle(new ShortArticleDto<>(mainArticle.getId(), mainArticle.getHotContent(), ArticleCategoryDto.getNewsCategory(),

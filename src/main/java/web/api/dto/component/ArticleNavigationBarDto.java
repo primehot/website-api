@@ -2,9 +2,9 @@ package web.api.dto.component;
 
 import lombok.Getter;
 import lombok.Setter;
-import web.api.dto.unit.article.AbstractArticleDto;
-import web.api.dto.unit.article.ShortArticleDto;
 import web.api.dto.unit.TopicDto;
+import web.api.dto.unit.article.ArticleDto;
+import web.api.dto.unit.article.ShortArticleDto;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class ArticleNavigationBarDto<A extends AbstractArticleDto, S extends ShortArticleDto> {
+public class ArticleNavigationBarDto<A extends ArticleDto, S extends ShortArticleDto> {
     List<TopicDto> topics;
     List<A> articles;
     List<S> seeAlso;

@@ -1,4 +1,4 @@
-package web.api.service;
+package web.api.service.article;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,11 +10,11 @@ import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.ArticleNavigationBarDto;
-import web.api.dto.unit.article.ArticleCategoryDto;
 import web.api.dto.unit.PageableDto;
-import web.api.dto.unit.article.ShortArticleDto;
 import web.api.dto.unit.TopicDto;
-import web.api.dto.unit.article.NewsArticleDto;
+import web.api.dto.unit.article.ArticleCategoryDto;
+import web.api.dto.unit.article.ArticleDto;
+import web.api.dto.unit.article.ShortArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.NewsArticleRepository;
 import web.api.util.HashTagUtil;
@@ -54,7 +54,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     }
 
     @Override
-    public NewsArticleDto getById(Long id) {
+    public ArticleDto getById(Long id) {
         Optional<NewsArticleEntity> item = repository.findById(id);
         if (item.isPresent()) {
             return toDto.convert(item.get());
@@ -63,7 +63,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     }
 
     @Override
-    public NewsArticleDto getMain() {
+    public ArticleDto getMain() {
         Optional<NewsArticleEntity> item = repository.findFirstByOrderByCreationDateAscTimesVisitedAsc();
         if (item.isPresent()) {
             return toDto.convert(item.get());
@@ -73,7 +73,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageableDto<NewsArticleDto> getPage(int page, int size) {
+    public PageableDto<ArticleDto> getPage(int page, int size) {
         Page<NewsArticleEntity> result = repository.findAll(PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
@@ -81,14 +81,14 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageableDto<NewsArticleDto> getTopicPage(int topicId, int page, int size) {
+    public PageableDto<ArticleDto> getTopicPage(int topicId, int page, int size) {
         Page<NewsArticleEntity> result = repository.findAllByNewsTopic(topicId, PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
 
     @Override
-    public PageableDto<NewsArticleDto> getHashTagPage(int hashTagId, int page, int size) {
+    public PageableDto<ArticleDto> getHashTagPage(int hashTagId, int page, int size) {
         Page<NewsArticleEntity> result = repository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
@@ -97,15 +97,15 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Override
     public ArticleNavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(NewsTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
-        List<NewsArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
+        List<ArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
-        List<NewsArticleDto> articles = top10.subList(0, 2);
+        List<ArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
                 .stream().map(this::buildShortArticle).collect(Collectors.toList());
 
-        ArticleNavigationBarDto<NewsArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
+        ArticleNavigationBarDto<ArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);
         dto.setArticles(articles);
         dto.setSeeAlso(shortArticles.subList(0, 4));
@@ -114,7 +114,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
         return dto;
     }
 
-    private ShortArticleDto buildShortArticle(NewsArticleDto e) {
+    private ShortArticleDto buildShortArticle(ArticleDto e) {
         return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory(), e.getHashTags());
     }
 

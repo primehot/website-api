@@ -8,24 +8,24 @@ import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.dto.unit.article.ArticleCategoryDto;
-import web.api.dto.unit.article.NewsArticleDto;
+import web.api.dto.unit.article.ArticleDto;
 import web.api.util.HashTagUtil;
 
 /**
  * Created by oleht on 12.10.2018
  */
 @Component
-public class NewsArticleEntityToDto implements Converter<NewsArticleEntity, NewsArticleDto> {
+public class NewsArticleEntityToDto implements Converter<NewsArticleEntity, ArticleDto> {
 
     @Synchronized
     @Nullable
     @Override
-    public NewsArticleDto convert(NewsArticleEntity entity) {
+    public ArticleDto convert(NewsArticleEntity entity) {
         if (entity == null) {
             return null;
         }
 
-        NewsArticleDto dto = new NewsArticleDto();
+        ArticleDto dto = new ArticleDto();
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
         dto.setContent(entity.getContent());

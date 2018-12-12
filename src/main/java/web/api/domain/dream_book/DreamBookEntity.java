@@ -5,7 +5,6 @@ import lombok.Setter;
 import web.api.domain.AbstractEntity;
 
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**

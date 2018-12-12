@@ -3,7 +3,7 @@ package web.api.domain.dream_book;
 /**
  * Created by oleht on 09.12.2018
  */
-public interface DreamBookEntityRankedEntity {
+public interface DreamBookRankedProjection {
 
     String getTitle();
 

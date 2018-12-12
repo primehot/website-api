@@ -21,7 +21,7 @@ public class ShortArticleUtil {
             return "";
         }
         String[] list;
-        if(content.length() > howLong) {
+        if (content.length() > howLong) {
             list = content.substring(0, howLong).split(" ");
         } else {
             list = content.split(" ");

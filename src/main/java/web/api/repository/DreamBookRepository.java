@@ -5,10 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import web.api.domain.dream_book.DreamBookEntity;
-import web.api.domain.dream_book.DreamBookEntityRankedEntity;
+import web.api.domain.dream_book.DreamBookRankedProjection;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by oleht on 20.11.2018
@@ -23,13 +22,19 @@ public interface DreamBookRepository extends PagingAndSortingRepository<DreamBoo
     @Query("SELECT d from DreamBookEntity as d order by d.timesVisited desc ")
     Page<DreamBookEntity> findTopVisited(Pageable pageable);
 
-    @Query(value = "SELECT ts_headline(db.title, q, 'StartSel=<b>, StopSel=</b>') AS title, " +
-            " ts_headline(db.content, q, 'StartSel=<b>, StopSel=</b>') AS content, " +
-            " db.author AS author, " +
-            " ts_rank_cd(db.document_tokens, q) AS rank " +
-            "  FROM dream_book AS db, " +
-            " to_tsquery('russian', ?1) AS q" +
-            "  WHERE db.document_tokens @@ q" +
-            "  ORDER BY rank DESC, db.times_visited DESC LIMIT 30;", nativeQuery = true)
-    List<DreamBookEntityRankedEntity> getByPhrase(String phrase);
+    @Query(
+            value = "SELECT ts_headline(db.title, q, 'StartSel=<b>, StopSel=</b>') AS title, " +
+                    " ts_headline(db.content, q, 'StartSel=<b>, StopSel=</b>') AS content, " +
+                    " db.author AS author, " +
+                    " ts_rank_cd(db.document_tokens, q) AS rank " +
+                    "  FROM dream_book AS db, " +
+                    " to_tsquery('russian', ?1) AS q" +
+                    "  WHERE db.document_tokens @@ q" +
+                    "  ORDER BY rank DESC, db.times_visited DESC",
+            countQuery = "SELECT count(*) " +
+                    "  FROM dream_book AS db, " +
+                    " to_tsquery('russian', ?1) AS q" +
+                    "  WHERE db.document_tokens @@ q",
+            nativeQuery = true)
+    Page<DreamBookRankedProjection> getByPhrase(String phrase, Pageable pageable);
 }

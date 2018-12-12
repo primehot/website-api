@@ -14,8 +14,8 @@ import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.TopicDto;
-import web.api.dto.unit.article.NewsArticleDto;
-import web.api.service.NewsArticleService;
+import web.api.dto.unit.article.ArticleDto;
+import web.api.service.article.NewsArticleService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,13 +54,13 @@ public class NewsArticleController {
 
     @GetMapping("/news/main")
     @ResponseBody
-    public NewsArticleDto getNewsMain() {
+    public ArticleDto getNewsMain() {
         return newsArticleService.getMain();
     }
 
     @GetMapping("/news/{id}")
     @ResponseBody
-    public NewsArticleDto getNewsById(@PathVariable("id") long id) {
+    public ArticleDto getNewsById(@PathVariable("id") long id) {
         return newsArticleService.getById(id);
     }
 

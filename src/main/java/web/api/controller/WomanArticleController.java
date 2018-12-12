@@ -14,8 +14,8 @@ import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.TopicDto;
-import web.api.dto.unit.article.WomanArticleDto;
-import web.api.service.WomanArticleService;
+import web.api.dto.unit.article.ArticleDto;
+import web.api.service.article.WomanArticleService;
 
 import java.util.List;
 
@@ -53,13 +53,13 @@ public class WomanArticleController {
 
     @GetMapping("/women/main")
     @ResponseBody
-    public WomanArticleDto getWomanMainArticle() {
+    public ArticleDto getWomanMainArticle() {
         return womanArticleService.getMain();
     }
 
     @GetMapping("/women/{id}")
     @ResponseBody
-    public WomanArticleDto getWomanArticleById(@PathVariable("id") long id) {
+    public ArticleDto getWomanArticleById(@PathVariable("id") long id) {
         return womanArticleService.getById(id);
     }
 

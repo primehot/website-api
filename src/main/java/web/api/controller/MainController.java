@@ -23,4 +23,5 @@ public class MainController {
     public MainPageDto getMainData() {
         return mainArticleService.getMainDto();
     }
+
 }

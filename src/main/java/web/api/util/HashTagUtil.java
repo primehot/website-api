@@ -23,7 +23,11 @@ public class HashTagUtil {
     }
 
     public static List<Integer> getHashTags(AbstractArticleEntity e) {
-        return Arrays.stream(e.getHashTags().split(hashTagSeparator)).map(HashTagUtil::unwrapHashTag).collect(Collectors.toList());
+        return getHashTags(e.getHashTags());
+    }
+
+    public static List<Integer> getHashTags(String tags) {
+        return Arrays.stream(tags.split(hashTagSeparator)).map(HashTagUtil::unwrapHashTag).collect(Collectors.toList());
     }
 
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import web.api.converter.dream.DreamBookEntityToDto;
 import web.api.converter.dream.DreamBookEntityToShortDto;
 import web.api.domain.dream_book.DreamBookEntity;
-import web.api.domain.dream_book.DreamBookEntityRankedEntity;
+import web.api.domain.dream_book.DreamBookRankedProjection;
 import web.api.dto.component.DreamBookNavigationBarDto;
 import web.api.dto.component.DreamTitlePageDto;
 import web.api.dto.unit.DreamBookDto;
@@ -68,7 +68,7 @@ public class DreamBookServiceImpl implements DreamBookService {
 
     @Override
     public List<DreamBookDto> getDreamBooksByPhrase(String phrase) {
-        List<DreamBookEntityRankedEntity> result = dreamBookRepository.getByPhrase(or(phrase));
+        List<DreamBookRankedProjection> result = dreamBookRepository.getByPhrase(or(phrase), PageRequest.of(0, 30)).getContent();
         return result.stream().map(e -> new DreamBookDto(e.getTitle(), e.getContent(), e.getAuthor())).collect(Collectors.toList());
     }
 }

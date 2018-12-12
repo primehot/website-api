@@ -8,6 +8,6 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class DreamBookArticleDto extends AbstractArticleDto<Long> {
+public class DreamBookArticleDto extends ArticleDto {
     private String title;
 }

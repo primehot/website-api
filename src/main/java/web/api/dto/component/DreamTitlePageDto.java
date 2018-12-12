@@ -3,7 +3,6 @@ package web.api.dto.component;
 import lombok.Getter;
 import lombok.Setter;
 import web.api.dto.unit.DreamBookDto;
-import web.api.dto.unit.ShortDreamBookDto;
 
 import java.util.List;
 
