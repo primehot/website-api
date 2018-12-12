@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import web.api.domain.arcticle.ArticleProjection;
 import web.api.domain.arcticle.ArticleRankedProjection;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 
@@ -27,8 +28,8 @@ public interface WomanArticleRepository extends PagingAndSortingRepository<Woman
     @Query("SELECT n from WomanArticleEntity n where n.creationDate > :dateBefore order by n.timesVisited, n.creationDate")
     List<WomanArticleEntity> getRecommended(@Param("dateBefore") Timestamp dateBefore, Pageable pageable);
 
-    @Query("SELECT a.image from WomanArticleEntity a where a.id = :articleId")
-    Optional<Byte[]> findArticleImageById(@Param("articleId") long articleId);
+    @Query("SELECT a.image as image from WomanArticleEntity a where a.id = :articleId")
+    Optional<ArticleProjection> findArticleImageById(@Param("articleId") long articleId);
 
     @Query("Select n from WomanArticleEntity n "
             + "where n.womanTopic = :topicId order by n.creationDate, n.timesVisited")

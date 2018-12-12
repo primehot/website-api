@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.woman.WomanArticleEntityToDto;
+import web.api.domain.arcticle.ArticleProjection;
 import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
@@ -46,7 +47,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     public byte[] getArticleImage(Long articleId) {
-        Optional<WomanArticleEntity> item = repository.findById(articleId);
+        Optional<ArticleProjection> item = repository.findArticleImageById(articleId);
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }

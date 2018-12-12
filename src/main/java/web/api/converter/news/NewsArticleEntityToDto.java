@@ -33,7 +33,7 @@ public class NewsArticleEntityToDto implements Converter<NewsArticleEntity, Arti
         dto.setHotContent(entity.getHotContent());
         dto.setTimesVisited(entity.getTimesVisited());
         HashTagUtil.getHashTags(entity).forEach(dto::addHashTag);
-        dto.setArticleCategory(new ArticleCategoryDto(ArticleCategory.NEWS.getId(), ArticleCategory.NEWS.getName()));
+        dto.setArticleCategory(ArticleCategoryDto.getNewsCategory());
 
         return dto;
     }

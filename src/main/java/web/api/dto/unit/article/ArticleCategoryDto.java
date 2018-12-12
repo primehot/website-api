@@ -13,7 +13,7 @@ import web.api.dto.AbstractDto;
 public class ArticleCategoryDto extends AbstractDto<Integer> {
     private String name;
 
-    public ArticleCategoryDto(Integer id, String name) {
+    private ArticleCategoryDto(Integer id, String name) {
         this.setId(id);
         this.name = name;
     }

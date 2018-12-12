@@ -31,7 +31,7 @@ public class DreamBookArticleEntityToDto implements Converter<DreamBookArticleEn
         dto.setContent(entity.getContent());
         dto.setHotContent(entity.getHotContent());
         HashTagUtil.getHashTags(entity).forEach(dto::addHashTag);
-        dto.setArticleCategory(new ArticleCategoryDto(ArticleCategory.DREAM.getId(), ArticleCategory.DREAM.getName()));
+        dto.setArticleCategory(ArticleCategoryDto.getDreamCategory());
 
         return dto;
     }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.news.NewsArticleEntityToDto;
+import web.api.domain.arcticle.ArticleProjection;
 import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
@@ -46,7 +47,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public byte[] getArticleImage(Long articleId) {
-        Optional<NewsArticleEntity> item = repository.findById(articleId);
+        Optional<ArticleProjection> item = repository.findArticleImageById(articleId);
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }

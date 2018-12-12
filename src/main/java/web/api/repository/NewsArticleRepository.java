@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import web.api.domain.arcticle.ArticleProjection;
 import web.api.domain.arcticle.ArticleRankedProjection;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 
@@ -27,8 +28,8 @@ public interface NewsArticleRepository extends PagingAndSortingRepository<NewsAr
 
     Collection<NewsArticleEntity> findTop5ByOrderByCreationDateAsc();
 
-    @Query("SELECT a.image from NewsArticleEntity a where a.id = :articleId")
-    Optional<Byte[]> findArticleImageById(@Param("articleId") long articleId);
+    @Query("SELECT a.image as image from NewsArticleEntity a where a.id = :articleId")
+    Optional<ArticleProjection> findArticleImageById(@Param("articleId") long articleId);
 
     @Query("SELECT n from NewsArticleEntity n "
             + "where n.newsTopic = :topicId order by n.creationDate, n.timesVisited")

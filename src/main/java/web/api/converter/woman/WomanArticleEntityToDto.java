@@ -31,7 +31,7 @@ public class WomanArticleEntityToDto implements Converter<WomanArticleEntity, Ar
         dto.setHotContent(entity.getHotContent());
         dto.setTimesVisited(entity.getTimesVisited());
         HashTagUtil.getHashTags(entity).forEach(dto::addHashTag);
-        dto.setArticleCategory(new ArticleCategoryDto(ArticleCategory.WOMEN.getId(), ArticleCategory.WOMEN.getName()));
+        dto.setArticleCategory(ArticleCategoryDto.getWomanCategory());
 
         return dto;
     }
