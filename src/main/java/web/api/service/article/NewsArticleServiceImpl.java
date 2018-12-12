@@ -142,7 +142,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
         List<NewsArticleEntity> recommended = repository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
         return recommended.stream()
-                .map(e -> buildShortArticle(e))
+                .map(this::buildShortArticle)
                 .collect(Collectors.toList());
     }
 

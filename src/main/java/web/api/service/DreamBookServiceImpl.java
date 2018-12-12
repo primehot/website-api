@@ -1,6 +1,5 @@
 package web.api.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import web.api.converter.dream.DreamBookEntityToDto;
@@ -29,13 +28,11 @@ public class DreamBookServiceImpl implements DreamBookService {
     private DreamBookRepository dreamBookRepository;
     private DreamBookEntityToShortDto toShortDto;
     private DreamBookEntityToDto toDto;
-    private ObjectMapper mapper;
 
-    public DreamBookServiceImpl(DreamBookRepository dreamBookRepository, DreamBookEntityToShortDto toShortDto, DreamBookEntityToDto toDto, ObjectMapper mapper) {
+    public DreamBookServiceImpl(DreamBookRepository dreamBookRepository, DreamBookEntityToShortDto toShortDto, DreamBookEntityToDto toDto) {
         this.dreamBookRepository = dreamBookRepository;
         this.toShortDto = toShortDto;
         this.toDto = toDto;
-        this.mapper = mapper;
     }
 
     @Override

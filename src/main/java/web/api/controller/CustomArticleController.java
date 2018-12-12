@@ -23,9 +23,15 @@ public class CustomArticleController {
         this.customService = customService;
     }
 
+    @GetMapping("/tags/additional")
+    @ResponseBody
+    public AdditionalArticlesDto getTagAdditionalData() {
+        return customService.getAdditionalData();
+    }
+
     @GetMapping("/tags/{id}")
     @ResponseBody
-    public PageableDto getTagsPage(@PathVariable("id") int id, @RequestParam("page") int page, @RequestParam("size") int size) {
+    public PageableDto getArticlePageByTag(@PathVariable("id") int id, @RequestParam("page") int page, @RequestParam("size") int size) {
         return customService.getTagsPage(id, page, size);
     }
 
@@ -36,16 +42,16 @@ public class CustomArticleController {
         return new TagDto(hashTag.getId(), hashTag.toString(), hashTag.getName());
     }
 
-    @GetMapping("/tags/additional")
-    @ResponseBody
-    public AdditionalArticlesDto getAdditionalData() {
-        return customService.getAdditionalData();
-    }
-
     @GetMapping("/search")
     @ResponseBody
     public PageableDto getArticlePageByPhrase(@RequestParam("phrase") String phrase, @RequestParam("page") int page, @RequestParam("size") int size) {
         return customService.getByPhrase(phrase, page, size);
+    }
+
+    @GetMapping("/search/additional")
+    @ResponseBody
+    public AdditionalArticlesDto getSearchAdditionalData() {
+        return customService.getAdditionalData();
     }
 
 }
