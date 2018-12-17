@@ -38,8 +38,7 @@ public class CustomArticleController {
     @GetMapping("/tags/{id}/name")
     @ResponseBody
     public TagDto getTagName(@PathVariable("id") int id) {
-        HashTag hashTag = HashTag.getById(id);
-        return new TagDto(hashTag.getId(), hashTag.toString(), hashTag.getName());
+        return TagDto.of(HashTag.getById(id));
     }
 
     @GetMapping("/search")

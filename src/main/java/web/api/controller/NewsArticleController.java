@@ -48,8 +48,7 @@ public class NewsArticleController {
     @GetMapping("/news/topics/{id}")
     @ResponseBody
     public TopicDto getTopic(@PathVariable("id") int id) {
-        NewsTopic topic = NewsTopic.getById(id);
-        return new TopicDto(topic.getId(), topic.toString(), topic.getName());
+        return TopicDto.of(NewsTopic.getById(id));
     }
 
     @GetMapping("/news/main")
@@ -76,7 +75,7 @@ public class NewsArticleController {
     @GetMapping("/news/topics")
     @ResponseBody
     public List<TopicDto> getTopic() {
-        return Arrays.stream(NewsTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
+        return Arrays.stream(NewsTopic.values()).map(e -> TopicDto.of(e)).collect(Collectors.toList());
     }
 
     @GetMapping("/news/navbar")

@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.woman.WomanArticleEntityToDto;
-import web.api.domain.arcticle.ArticleProjection;
+import web.api.domain.arcticle.ImageProjection;
 import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
@@ -47,7 +47,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     public byte[] getArticleImage(Long articleId) {
-        Optional<ArticleProjection> item = repository.findArticleImageById(articleId);
+        Optional<ImageProjection> item = repository.findArticleImageById(articleId);
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -90,14 +90,14 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     public ArticleNavigationBarDto getNavigationBarData() {
-        List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
+        List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(TopicDto::of).collect(Collectors.toList());
         List<ArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(this::buildShortArticle).collect(Collectors.toList());
+                .stream().map(ShortArticleUtil::buildShortArticle).collect(Collectors.toList());
 
         ArticleNavigationBarDto<ArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);
@@ -125,15 +125,6 @@ public class WomanArticleServiceImpl implements WomanArticleService {
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
 
-    private ShortArticleDto buildShortArticle(ArticleDto e) {
-        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getWomanCategory(), e.getHashTags());
-    }
-
-    private ShortArticleDto buildShortArticle(WomanArticleEntity e) {
-        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getWomanCategory(), HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
-                .collect(Collectors.toList()));
-    }
-
     private Collection<ShortArticleDto> getRecommended() {
         Instant i = Instant.now().minus(recommendedFromDay, ChronoUnit.DAYS);
         Timestamp dateBefore = Timestamp.from(i);
@@ -141,7 +132,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
         List<WomanArticleEntity> recommended = repository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
 
         return recommended.stream()
-                .map(this::buildShortArticle)
+                .map(ShortArticleUtil::buildShortArticle)
                 .collect(Collectors.toList());
     }
 

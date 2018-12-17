@@ -1,5 +1,12 @@
 package web.api.util;
 
+import web.api.domain.arcticle.HashTag;
+import web.api.domain.arcticle.news.NewsArticleEntity;
+import web.api.domain.arcticle.woman.WomanArticleEntity;
+import web.api.dto.unit.article.ArticleCategoryDto;
+import web.api.dto.unit.article.ArticleDto;
+import web.api.dto.unit.article.ShortArticleDto;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -29,6 +36,23 @@ public class ShortArticleUtil {
 
         list[list.length - 1] = "...";
         return Arrays.stream(list).collect(Collectors.joining(" "));
+    }
+
+    public static ShortArticleDto buildShortArticle(ArticleDto e) {
+        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory(), e.getHashTags());
+    }
+
+    public static ShortArticleDto buildShortArticle(WomanArticleEntity e) {
+        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getWomanCategory(), HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
+                .collect(Collectors.toList()));
+    }
+
+    public static ShortArticleDto buildShortArticle(NewsArticleEntity e) {
+        return new ShortArticleDto<>(e.getId(),
+                ShortArticleUtil.cutShortContent(e.getContent()),
+                ArticleCategoryDto.getNewsCategory(),
+                HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
+                        .collect(Collectors.toList()));
     }
 
 }

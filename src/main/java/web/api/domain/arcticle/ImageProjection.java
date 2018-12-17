@@ -3,7 +3,7 @@ package web.api.domain.arcticle;
 /**
  * Created by oleht on 12.10.2018
  */
-public interface ArticleProjection {
+public interface ImageProjection {
 
     Byte[] getImage();
 

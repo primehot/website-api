@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.news.NewsArticleEntityToDto;
-import web.api.domain.arcticle.ArticleProjection;
+import web.api.domain.arcticle.ImageProjection;
 import web.api.domain.arcticle.HashTag;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
@@ -47,7 +47,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public byte[] getArticleImage(Long articleId) {
-        Optional<ArticleProjection> item = repository.findArticleImageById(articleId);
+        Optional<ImageProjection> item = repository.findArticleImageById(articleId);
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -97,14 +97,14 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public ArticleNavigationBarDto getNavigationBarData() {
-        List<TopicDto> topics = Arrays.stream(NewsTopic.values()).map(e -> new TopicDto(e.getId(), e.toString(), e.getName())).collect(Collectors.toList());
+        List<TopicDto> topics = Arrays.stream(NewsTopic.values()).map(TopicDto::of).collect(Collectors.toList());
         List<ArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(this::buildShortArticle).collect(Collectors.toList());
+                .stream().map(ShortArticleUtil::buildShortArticle).collect(Collectors.toList());
 
         ArticleNavigationBarDto<ArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);
@@ -113,18 +113,6 @@ public class NewsArticleServiceImpl implements NewsArticleService {
         dto.setMostCommented(shortArticles.subList(4, 8));
 
         return dto;
-    }
-
-    private ShortArticleDto buildShortArticle(ArticleDto e) {
-        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory(), e.getHashTags());
-    }
-
-    private ShortArticleDto buildShortArticle(NewsArticleEntity e) {
-        return new ShortArticleDto<>(e.getId(),
-                ShortArticleUtil.cutShortContent(e.getContent()),
-                ArticleCategoryDto.getNewsCategory(),
-                HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
-                        .collect(Collectors.toList()));
     }
 
     @Override
@@ -143,7 +131,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
         List<NewsArticleEntity> recommended = repository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
         return recommended.stream()
-                .map(this::buildShortArticle)
+                .map(ShortArticleUtil::buildShortArticle)
                 .collect(Collectors.toList());
     }
 

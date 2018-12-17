@@ -46,8 +46,7 @@ public class WomanArticleController {
     @GetMapping("/women/topics/{id}")
     @ResponseBody
     public TopicDto getTopic(@PathVariable("id") int id) {
-        WomanTopic topic = WomanTopic.getById(id);
-        return new TopicDto(topic.getId(), topic.toString(), topic.getName());
+        return TopicDto.of(WomanTopic.getById(id));
     }
 
 
