@@ -5,10 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
@@ -24,6 +21,7 @@ public abstract class AbstractEntity<T extends Number> {
     private T id;
 
     @CreationTimestamp
+    @Column(name = "creation_date")
     private Timestamp creationDate;
 
     @UpdateTimestamp

@@ -2,10 +2,12 @@ package web.api.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import web.api.domain.dream_book.DreamBookEntity;
 import web.api.domain.dream_book.DreamBookRankedProjection;
+import web.api.domain.dream_book.DreamBookTitlesProjection;
 
 import java.util.Collection;
 
@@ -14,13 +16,10 @@ import java.util.Collection;
  */
 public interface DreamBookRepository extends PagingAndSortingRepository<DreamBookEntity, Long> {
 
-    Collection<DreamBookEntity> findAllByTitleOrderByCreationDateAscTimesVisitedAsc(String title);
+    Collection<DreamBookEntity> findAllByTitle(String title, Sort sort);
 
-    @Query("SELECT d.title, sum(d.timesVisited) as f from DreamBookEntity as d group by title order by f desc ")
-    Page<Object[]> findMainTitles(Pageable pageable);
-
-    @Query("SELECT d from DreamBookEntity as d order by d.timesVisited desc ")
-    Page<DreamBookEntity> findTopVisited(Pageable pageable);
+    @Query("SELECT d.title as title, sum(d.timesVisited) as timesVisited from DreamBookEntity as d group by title order by timesVisited desc ")
+    Page<DreamBookTitlesProjection> findMainTitles(Pageable pageable);
 
     @Query(
             value = "SELECT ts_headline(db.title, q, 'StartSel=<b>, StopSel=</b>') AS title, " +

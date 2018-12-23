@@ -2,6 +2,8 @@ package web.api.service.article;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.news.NewsArticleEntityToDto;
@@ -25,10 +27,7 @@ import web.api.util.ShortArticleUtil;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +35,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class NewsArticleServiceImpl implements NewsArticleService {
+
+    private final Sort byDateAndTimes = Sort.by(Sort.Order.asc("creationDate"), Sort.Order.desc("timesVisited"));
 
     private NewsArticleEntityToDto toDto;
     private NewsArticleRepository repository;
@@ -65,11 +66,8 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public ArticleDto getMain() {
-        Optional<NewsArticleEntity> item = repository.findFirstByOrderByCreationDateAscTimesVisitedAsc();
-        if (item.isPresent()) {
-            return toDto.convert(item.get());
-        }
-        throw new NotFoundException("Not found main NewsArticle");
+        NewsArticleEntity item = repository.findAll(PageRequest.of(0, 1, byDateAndTimes)).getContent().get(0);
+        return toDto.convert(item);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Override
     public ArticleNavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(NewsTopic.values()).map(TopicDto::of).collect(Collectors.toList());
-        List<ArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
+        List<ArticleDto> top10 = repository.findAll(PageRequest.of(0, 10, byDateAndTimes))
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
@@ -136,7 +134,8 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     }
 
     private Collection<ShortArticleDto> getNewest() {
-        return repository.findTop5ByOrderByCreationDateAsc().stream()
+        return repository.findAll(PageRequest.of(0, 4, byDateAndTimes)).getContent()
+                .stream()
                 .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory(),
                         HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
                                 .collect(Collectors.toList()))).collect(Collectors.toList());

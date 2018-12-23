@@ -2,11 +2,12 @@ package web.api.service.article;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.woman.WomanArticleEntityToDto;
-import web.api.domain.arcticle.ImageProjection;
 import web.api.domain.arcticle.HashTag;
+import web.api.domain.arcticle.ImageProjection;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.component.AdditionalArticlesDto;
@@ -37,6 +38,8 @@ import java.util.stream.Collectors;
 @Service
 public class WomanArticleServiceImpl implements WomanArticleService {
 
+    private final Sort byDateAndTimes = Sort.by(Sort.Order.asc("creationDate"), Sort.Order.desc("timesVisited"));
+
     private WomanArticleEntityToDto toDto;
     private WomanArticleRepository repository;
 
@@ -65,11 +68,8 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     public ArticleDto getMain() {
-        Optional<WomanArticleEntity> item = repository.findFirstByOrderByCreationDateAsc();
-        if (item.isPresent()) {
-            return toDto.convert(item.get());
-        }
-        throw new NotFoundException("Not found main WomanArticle");
+        WomanArticleEntity item = repository.findAll(PageRequest.of(0, 1, byDateAndTimes)).getContent().get(0);
+        return toDto.convert(item);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     public ArticleNavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(TopicDto::of).collect(Collectors.toList());
-        List<ArticleDto> top10 = repository.findTop10ByOrderByCreationDateAscTimesVisitedAsc()
+        List<ArticleDto> top10 = repository.findAll(PageRequest.of(0, 10, byDateAndTimes))
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
@@ -137,7 +137,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     }
 
     private Collection<ShortArticleDto> getNewest() {
-        return repository.findTop4ByOrderByCreationDateAsc().stream()
+        return repository.findAll(PageRequest.of(0,4, byDateAndTimes)).stream()
                 .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getWomanCategory(),
                         HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
                                 .collect(Collectors.toList()))).collect(Collectors.toList());
