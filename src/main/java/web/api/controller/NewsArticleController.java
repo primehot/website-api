@@ -75,7 +75,7 @@ public class NewsArticleController {
     @GetMapping("/news/topics")
     @ResponseBody
     public List<TopicDto> getTopic() {
-        return Arrays.stream(NewsTopic.values()).map(e -> TopicDto.of(e)).collect(Collectors.toList());
+        return Arrays.stream(NewsTopic.values()).map(TopicDto::of).collect(Collectors.toList());
     }
 
     @GetMapping("/news/navbar")

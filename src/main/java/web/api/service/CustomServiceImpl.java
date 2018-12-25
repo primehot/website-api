@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static web.api.util.FTSUtil.or;
 import static web.api.util.PageUtil.getSizes;
 
 /**
@@ -49,8 +50,8 @@ public class CustomServiceImpl implements CustomService {
     @Override
     public PageableDto<ArticleDto> getByPhrase(String phrase, int page, int size) {
         Pair<Integer, Integer> sizes = getSizes(size);
-        Page<ArticleRankedProjection> womanArticles = womanArticleRepository.getByPhrase(phrase, PageRequest.of(page, sizes.getFirst()));
-        Page<ArticleRankedProjection> newsArticles = newsArticleRepository.getByPhrase(phrase, PageRequest.of(page, sizes.getFirst()));
+        Page<ArticleRankedProjection> womanArticles = womanArticleRepository.getByPhrase(or(phrase), PageRequest.of(page, sizes.getFirst()));
+        Page<ArticleRankedProjection> newsArticles = newsArticleRepository.getByPhrase(or(phrase), PageRequest.of(page, sizes.getFirst()));
 
         List<ArticleDto> result = getAllItems(womanArticles.getContent(), newsArticles.getContent());
 

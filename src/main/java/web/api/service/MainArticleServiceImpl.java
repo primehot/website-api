@@ -50,7 +50,7 @@ public class MainArticleServiceImpl implements MainArticleService {
         dto.setMainArticle(new ShortArticleDto<>(mainArticle.getId(), mainArticle.getHotContent(), ArticleCategoryDto.getNewsCategory(),
                 mainArticle.getHashTags()));
         dto.setMainItems(mainArticles.stream()
-                .map(e -> new ShortArticleDto(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory(), e.getHashTags()))
+                .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory(), e.getHashTags()))
                 .collect(Collectors.toList()));
     }
 
