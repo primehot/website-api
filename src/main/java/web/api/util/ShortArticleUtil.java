@@ -43,8 +43,11 @@ public class ShortArticleUtil {
     }
 
     public static ShortArticleDto buildShortArticle(WomanArticleEntity e) {
-        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getWomanCategory(), HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
-                .collect(Collectors.toList()));
+        return new ShortArticleDto<>(e.getId(),
+                ShortArticleUtil.cutShortContent(e.getContent()),
+                ArticleCategoryDto.getWomanCategory(),
+                HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
+                        .collect(Collectors.toList()));
     }
 
     public static ShortArticleDto buildShortArticle(NewsArticleEntity e) {
@@ -55,4 +58,15 @@ public class ShortArticleUtil {
                         .collect(Collectors.toList()));
     }
 
+    public static ShortArticleDto buildNewest(NewsArticleEntity e) {
+        return new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory(),
+                HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
+                        .collect(Collectors.toList()));
+    }
+
+    public static ShortArticleDto buildNewest(WomanArticleEntity e) {
+        return new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getWomanCategory(),
+                HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
+                        .collect(Collectors.toList()));
+    }
 }

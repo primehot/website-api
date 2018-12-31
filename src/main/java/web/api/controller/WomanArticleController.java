@@ -88,4 +88,10 @@ public class WomanArticleController {
     public AdditionalArticlesDto getAdditionalData() {
         return womanArticleService.getAdditionalArticles();
     }
+
+    @GetMapping("/women/additional/topic/{topicId}")
+    @ResponseBody
+    public AdditionalArticlesDto getAdditionalData(@PathVariable("topicId") Integer topicId) {
+        return womanArticleService.getAdditionalArticlesByTopic(topicId);
+    }
 }

@@ -51,5 +51,5 @@ public interface WomanArticleRepository extends PagingAndSortingRepository<Woman
                     " to_tsquery('russian', ?1) AS q" +
                     "  WHERE wa.document_tokens @@ q",
             nativeQuery = true)
-    Page<ArticleRankedProjection> getByPhrase(String phrase, Pageable pageable);
+    Page<ArticleRankedProjection> getByPhrase(String formattedPhrase, Pageable pageable);
 }

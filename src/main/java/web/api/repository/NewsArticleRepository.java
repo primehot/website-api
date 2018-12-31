@@ -25,7 +25,7 @@ public interface NewsArticleRepository extends PagingAndSortingRepository<NewsAr
     Optional<ImageProjection> findArticleImageById(@Param("articleId") long articleId);
 
     @Query("SELECT n from NewsArticleEntity n "
-            + "where n.newsTopic = :topicId order by n.creationDate, n.timesVisited")
+            + "where n.newsTopic = :topicId")
     Page<NewsArticleEntity> findAllByNewsTopic(@Param("topicId") Integer topicId,
                                                Pageable pageable);
 
@@ -50,5 +50,5 @@ public interface NewsArticleRepository extends PagingAndSortingRepository<NewsAr
                     " to_tsquery('russian', ?1) AS q" +
                     "  WHERE na.document_tokens @@ q",
             nativeQuery = true)
-    Page<ArticleRankedProjection> getByPhrase(String phrase, Pageable pageable);
+    Page<ArticleRankedProjection> getByPhrase(String formattedPhrase, Pageable pageable);
 }

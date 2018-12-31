@@ -1,10 +1,14 @@
 package web.api.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import web.api.domain.arcticle.AbstractArticleEntity;
 import web.api.domain.arcticle.ArticleRankedProjection;
+import web.api.domain.arcticle.news.NewsArticleEntity;
+import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.article.AbstractArticleCategoryDto;
@@ -17,6 +21,7 @@ import web.api.service.article.ArticleService;
 import web.api.service.article.NewsArticleService;
 import web.api.service.article.WomanArticleService;
 import web.api.util.HashTagUtil;
+import web.api.util.ShortArticleUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +38,11 @@ import static web.api.util.PageUtil.getSizes;
 
 @Service
 public class CustomServiceImpl implements CustomService {
+
+    @Value("${recommended.size}")
+    private Integer recommendedSize;
+    @Value("${newest.size}")
+    private Integer newestSize;
 
     private WomanArticleRepository womanArticleRepository;
     private NewsArticleRepository newsArticleRepository;
@@ -76,8 +86,20 @@ public class CustomServiceImpl implements CustomService {
         AdditionalArticlesDto newAdditional = newsArticleService.getAdditionalArticles();
         AdditionalArticlesDto womanAdditional = womanArticleService.getAdditionalArticles();
 
+        return getAdditional(newAdditional, womanAdditional);
+    }
+
+    @Override
+    public AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId) {
+        AdditionalArticlesDto newAdditional = newsArticleService.getAdditionalArticlesByTag(hashTagId);
+        AdditionalArticlesDto womanAdditional = womanArticleService.getAdditionalArticlesByTag(hashTagId);
+
+        return getAdditional(newAdditional, womanAdditional);
+    }
+
+    private AdditionalArticlesDto getAdditional(AdditionalArticlesDto newAdditional, AdditionalArticlesDto womanAdditional) {
         Collection<ShortArticleDto> recommended = new ArrayList<>();
-        for (int i = 0; i < ArticleService.recommendedSize; i++) {
+        for (int i = 0; i < recommendedSize; i++) {
             if (i % 2 == 0) {
                 ShortArticleDto item = (ShortArticleDto) newAdditional.getRecommended().iterator().next();
                 recommended.add(item);
@@ -88,7 +110,7 @@ public class CustomServiceImpl implements CustomService {
         }
 
         Collection<ShortArticleDto> newest = new ArrayList<>();
-        for (int i = 0; i < ArticleService.newestSize; i++) {
+        for (int i = 0; i < newestSize; i++) {
             if (i % 2 == 0) {
                 ShortArticleDto item = (ShortArticleDto) newAdditional.getNewest().iterator().next();
                 newest.add(item);

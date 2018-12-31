@@ -13,4 +13,8 @@ public class FTSUtil {
         return phrase.replaceAll(" ", "&");
     }
 
+    public static String not(String phrase) {
+        return phrase.replaceAll(" ", "!");
+    }
+
 }

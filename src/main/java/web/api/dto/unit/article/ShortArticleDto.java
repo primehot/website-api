@@ -20,4 +20,10 @@ public class ShortArticleDto<T extends Number> extends AbstractArticleCategoryDt
         this.setId(id);
         this.setHashTags(hashTags);
     }
+
+    public ShortArticleDto(T id, String shortContent, ArticleCategoryDto articleCategory) {
+        this.shortContent = shortContent;
+        this.setArticleCategory(articleCategory);
+        this.setId(id);
+    }
 }

@@ -10,23 +10,26 @@ import web.api.dto.unit.article.ArticleDto;
  */
 public interface ArticleService {
 
-    Integer recommendedSize = 5;
-    Integer recommendedFromDay = 7;
-    Integer newestSize = 5;
-
     byte[] getArticleImage(Long articleId);
 
     ArticleDto getById(Long id);
 
     ArticleDto getMain();
 
+    /**
+     * We start from page 1 instead of 0. Because page 0 is reserved for recommended and newest data
+     * @param page
+     * @param size
+     * @return PageableDto<ArticleDto>
+     */
     PageableDto<ArticleDto> getPage(int page, int size);
-
     PageableDto<ArticleDto> getTopicPage(int topicId, int page, int size);
-
     PageableDto<ArticleDto> getHashTagPage(int hashTagId, int page, int size);
 
     ArticleNavigationBarDto getNavigationBarData();
 
     AdditionalArticlesDto getAdditionalArticles();
+    AdditionalArticlesDto getAdditionalArticlesByTopic(int topicId);
+    AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId);
+
 }

@@ -29,6 +29,12 @@ public class CustomArticleController {
         return customService.getAdditionalData();
     }
 
+    @GetMapping("/tags/{tagId}/additional")
+    @ResponseBody
+    public AdditionalArticlesDto getSearchAdditionalData(@PathVariable("tagId") int tagId) {
+        return customService.getAdditionalArticlesByTag(tagId);
+    }
+
     @GetMapping("/tags/{id}")
     @ResponseBody
     public PageableDto getArticlePageByTag(@PathVariable("id") int id, @RequestParam("page") int page, @RequestParam("size") int size) {
@@ -52,5 +58,4 @@ public class CustomArticleController {
     public AdditionalArticlesDto getSearchAdditionalData() {
         return customService.getAdditionalData();
     }
-
 }

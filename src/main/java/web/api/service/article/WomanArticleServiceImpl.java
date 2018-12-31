@@ -1,5 +1,6 @@
 package web.api.service.article;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -39,6 +40,15 @@ import java.util.stream.Collectors;
 public class WomanArticleServiceImpl implements WomanArticleService {
 
     private final Sort byDateAndTimes = Sort.by(Sort.Order.asc("creationDate"), Sort.Order.desc("timesVisited"));
+
+    @Value("${page.size}")
+    private Integer pageSize;
+    @Value("${recommended.size}")
+    private Integer recommendedSize;
+    @Value("${newest.size}")
+    private Integer newestSize;
+    @Value("${navigation.size}")
+    private Integer navigationSize;
 
     private WomanArticleEntityToDto toDto;
     private WomanArticleRepository repository;
@@ -91,7 +101,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     public ArticleNavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(TopicDto::of).collect(Collectors.toList());
-        List<ArticleDto> top10 = repository.findAll(PageRequest.of(0, 10, byDateAndTimes))
+        List<ArticleDto> top10 = repository.findAll(PageRequest.of(1, navigationSize, byDateAndTimes))
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
@@ -109,37 +119,36 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public AdditionalArticlesDto getAdditionalArticles() {
-        AdditionalArticlesDto<ShortArticleDto> dto = new AdditionalArticlesDto<>();
-        dto.setRecommended(getRecommended());
-        dto.setNewest(getNewest());
-
-        return dto;
-    }
-
-    @Override
     public PageableDto<ArticleDto> getHashTagPage(int hashTagId, int page, int size) {
         Page<WomanArticleEntity> result = repository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
 
-    private Collection<ShortArticleDto> getRecommended() {
-        Instant i = Instant.now().minus(recommendedFromDay, ChronoUnit.DAYS);
-        Timestamp dateBefore = Timestamp.from(i);
-
-        List<WomanArticleEntity> recommended = repository.getRecommended(dateBefore, PageRequest.of(0, recommendedSize));
-
-        return recommended.stream()
-                .map(ShortArticleUtil::buildShortArticle)
-                .collect(Collectors.toList());
+    @Override
+    @Transactional(readOnly = true)
+    public AdditionalArticlesDto getAdditionalArticles() {
+        List<WomanArticleEntity> top10 = repository.findAll(PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        return getAdditional(top10);
     }
 
-    private Collection<ShortArticleDto> getNewest() {
-        return repository.findAll(PageRequest.of(0,4, byDateAndTimes)).stream()
-                .map(e -> new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getWomanCategory(),
-                        HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
-                                .collect(Collectors.toList()))).collect(Collectors.toList());
+    @Override
+    public AdditionalArticlesDto getAdditionalArticlesByTopic(int topicId) {
+        List<WomanArticleEntity> top10 = repository.findAllByWomanTopic(topicId, PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        return getAdditional(top10);
+    }
+
+    @Override
+    public AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId) {
+        List<WomanArticleEntity> top10 = repository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        return getAdditional(top10);
+    }
+
+    private AdditionalArticlesDto getAdditional(List<WomanArticleEntity> top10) {
+        AdditionalArticlesDto<ShortArticleDto> dto = new AdditionalArticlesDto<>();
+        dto.setNewest(top10.subList(0, newestSize).stream().map(ShortArticleUtil::buildNewest).collect(Collectors.toList()));
+        dto.setRecommended(top10.subList(newestSize, newestSize + recommendedSize).stream().map(ShortArticleUtil::buildShortArticle).collect(Collectors.toList()));
+
+        return dto;
     }
 }

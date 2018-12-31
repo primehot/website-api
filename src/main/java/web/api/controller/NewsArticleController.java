@@ -89,4 +89,10 @@ public class NewsArticleController {
     public AdditionalArticlesDto getAdditionalData() {
         return newsArticleService.getAdditionalArticles();
     }
+
+    @GetMapping("/news/additional/topic/{topicId}")
+    @ResponseBody
+    public AdditionalArticlesDto getAdditionalData(@PathVariable("topicId") Integer topicId) {
+        return newsArticleService.getAdditionalArticlesByTopic(topicId);
+    }
 }

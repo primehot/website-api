@@ -35,5 +35,5 @@ public interface DreamBookRepository extends PagingAndSortingRepository<DreamBoo
                     " to_tsquery('russian', ?1) AS q" +
                     "  WHERE db.document_tokens @@ q",
             nativeQuery = true)
-    Page<DreamBookRankedProjection> getByPhrase(String phrase, Pageable pageable);
+    Page<DreamBookRankedProjection> getByPhrase(String formattedPhrase, Pageable pageable);
 }
