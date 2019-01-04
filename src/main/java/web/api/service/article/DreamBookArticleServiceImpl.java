@@ -109,7 +109,7 @@ public class DreamBookArticleServiceImpl implements DreamBookArticleService {
 
     private AdditionalArticlesDto getAdditional(List<DreamBookArticleEntity> top10) {
         AdditionalArticlesDto<ShortArticleDto> dto = new AdditionalArticlesDto<>();
-        dto.setRecommended(top10.subList(0, recommendedSize).stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.DREAM)).collect(Collectors.toList()));
+        dto.setRecommended(top10.subList(0, recommendedSize).stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.DREAMBOOK)).collect(Collectors.toList()));
 
         return dto;
     }

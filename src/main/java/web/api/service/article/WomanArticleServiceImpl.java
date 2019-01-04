@@ -96,7 +96,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
         List<ArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(ArticleUtil::buildShortArticle).collect(Collectors.toList());
+                .stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.WOMEN)).collect(Collectors.toList());
 
         ArticleNavigationBarDto<ArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);

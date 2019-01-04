@@ -30,6 +30,10 @@ public class ArticleCategoryDto extends AbstractDto<Integer> {
         return new ArticleCategoryDto(ArticleCategory.WOMEN.getId(), ArticleCategory.WOMEN.getName());
     }
 
+    public static ArticleCategoryDto getDreamBookCategory() {
+        return new ArticleCategoryDto(ArticleCategory.DREAMBOOK.getId(), ArticleCategory.DREAMBOOK.getName());
+    }
+
     public static ArticleCategoryDto getDreamCategory() {
         return new ArticleCategoryDto(ArticleCategory.DREAM.getId(), ArticleCategory.DREAM.getName());
     }

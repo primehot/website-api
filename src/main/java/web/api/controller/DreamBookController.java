@@ -1,16 +1,13 @@
 package web.api.controller;
 
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import web.api.dto.component.AdditionalArticlesDto;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import web.api.dto.component.DreamBookNavigationBarDto;
 import web.api.dto.component.DreamTitlePageDto;
 import web.api.dto.unit.DreamBookDto;
-import web.api.dto.unit.article.ArticleDto;
 import web.api.service.DreamBookService;
 import web.api.service.article.DreamBookArticleService;
 
@@ -31,21 +28,6 @@ public class DreamBookController {
         this.dreamBookArticleService = dreamBookArticleService;
     }
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    public ArticleDto getNewsById(@PathVariable("id") long id) {
-        return dreamBookArticleService.getById(id);
-    }
-
-    @GetMapping("/{id}/image")
-    public ResponseEntity<byte[]> getNewsArticleImageById(@PathVariable("id") long id) {
-        byte[] image = dreamBookArticleService.getMainImage(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-
-        return ResponseEntity.ok().headers(headers).contentType(MediaType.IMAGE_JPEG).body(image);
-    }
-
     @GetMapping
     @ResponseBody
     public List<DreamBookDto> getDataFTS(@RequestParam("phrase") String phrase) {
@@ -62,11 +44,5 @@ public class DreamBookController {
     @ResponseBody
     public DreamBookNavigationBarDto getNavBarData() {
         return dreamBookService.getNavigationBarData();
-    }
-
-    @GetMapping("/additional")
-    @ResponseBody
-    public AdditionalArticlesDto getAdditionalData() {
-        return dreamBookArticleService.getAdditionalArticles();
     }
 }

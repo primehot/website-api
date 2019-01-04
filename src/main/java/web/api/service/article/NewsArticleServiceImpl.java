@@ -20,9 +20,9 @@ import web.api.dto.unit.article.ArticleDto;
 import web.api.dto.unit.article.ShortArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.NewsArticleRepository;
+import web.api.util.ArticleUtil;
 import web.api.util.HashTagUtil;
 import web.api.util.ImageUtil;
-import web.api.util.ArticleUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -117,7 +117,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
         List<ArticleDto> articles = top10.subList(0, 2);
         articles.forEach(e -> e.setContent(ArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(ArticleUtil::buildShortArticle).collect(Collectors.toList());
+                .stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.NEWS)).collect(Collectors.toList());
 
         ArticleNavigationBarDto<ArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);

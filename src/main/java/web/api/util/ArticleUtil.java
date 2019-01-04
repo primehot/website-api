@@ -41,8 +41,8 @@ public class ArticleUtil {
         return Arrays.stream(list).collect(Collectors.joining(" "));
     }
 
-    public static ShortArticleDto buildShortArticle(ArticleDto e) {
-        return new ShortArticleDto<>(e.getId(), ArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory(), e.getHashTags());
+    public static ShortArticleDto buildShortArticle(ArticleDto e, ArticleCategory category) {
+        return new ShortArticleDto<>(e.getId(), ArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getArticleCategoryDto(category), e.getHashTags());
     }
 
     public static ShortArticleDto buildShortArticle(AbstractArticleEntity e, ArticleCategory category) {

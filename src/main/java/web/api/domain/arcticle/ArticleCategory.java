@@ -12,7 +12,8 @@ import java.util.Optional;
 public enum ArticleCategory {
     NEWS(1, "news"),
     WOMEN(2, "women"),
-    DREAM(3, "dream");
+    DREAM(3, "dream"),
+    DREAMBOOK(4, "dreambook");
 
     private final Integer id;
     private final String name;
