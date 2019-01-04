@@ -8,16 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 import web.api.domain.arcticle.AbstractArticleEntity;
 import web.api.domain.arcticle.HashTag;
+import web.api.domain.arcticle.dream.DreamBookArticleEntity;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.domain.dream_book.DreamBookEntity;
+import web.api.repository.DreamBookArticleRepository;
 import web.api.repository.DreamBookRepository;
 import web.api.repository.NewsArticleRepository;
 import web.api.repository.WomanArticleRepository;
 import web.api.util.ImageUtil;
-import web.api.util.ShortArticleUtil;
+import web.api.util.ArticleUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,11 +47,13 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
     private NewsArticleRepository newsArticleRepository;
     private WomanArticleRepository womanArticleRepository;
     private DreamBookRepository dreamBookRepository;
+    private DreamBookArticleRepository dreamBookArticleRepository;
 
-    public TestDataBootstrap(NewsArticleRepository newsArticleRepository, WomanArticleRepository womanArticleRepository, DreamBookRepository dreamBookRepository) {
+    public TestDataBootstrap(NewsArticleRepository newsArticleRepository, WomanArticleRepository womanArticleRepository, DreamBookRepository dreamBookRepository, DreamBookArticleRepository dreamBookArticleRepository) {
         this.newsArticleRepository = newsArticleRepository;
         this.womanArticleRepository = womanArticleRepository;
         this.dreamBookRepository = dreamBookRepository;
+        this.dreamBookArticleRepository = dreamBookArticleRepository;
     }
 
     @Override
@@ -60,6 +64,7 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
         addBasicMainNewsArticle();
         addBasicWomanArticle();
         addBasicMainWomanArticle();
+        addBasicDreamBookArticle();
         addDreamBook();
     }
 
@@ -136,14 +141,32 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
         womanArticleRepository.saveAll(womanArticles);
     }
 
+    private void addBasicDreamBookArticle() {
+        List<DreamBookArticleEntity> womanArticles = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            DreamBookArticleEntity entity = new DreamBookArticleEntity();
+            entity.setTitle("News number " + i);
+            entity.setContent(lorem);
+            entity.setHotContent("HOT " + i);
+            entity.setMain(true);
+            entity.addHashTag(HashTag.INSTAGRAM);
+            entity.addHashTag(HashTag.RELIGY);
+            addImage(entity, "classpath:pictures/dreambook/article.jpg");
+
+            womanArticles.add(entity);
+        }
+
+        dreamBookArticleRepository.saveAll(womanArticles);
+    }
+
     private void addImage(AbstractArticleEntity entity, String classpath) {
         try {
             File file = ResourceUtils.getFile(classpath);
             byte[] res = Files.readAllBytes(file.toPath());
             Byte[] image = ImageUtil.convertBytes(res);
-            entity.setImage(image);
+            entity.setMainImage(image);
         } catch (IOException e) {
-            log.debug("Error during loading image: " + classpath);
+            log.debug("Error during loading mainImage: " + classpath);
         }
     }
 
@@ -159,16 +182,16 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
         addDreamToList("Душа", "Олег Цюпа Красавчик", "Летела на лужами", dreamBookEntities);
         addDreamToList("Ум", "Олег Цюпа Все знает", "Значить не тупой", dreamBookEntities);
 
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
-        addDreamToList("Деньги", "Олег Цюпа", ShortArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
+        addDreamToList("Деньги", "Олег Цюпа", ArticleUtil.cutShortContent(lorem), dreamBookEntities);
 
 
         this.dreamBookRepository.saveAll(dreamBookEntities);

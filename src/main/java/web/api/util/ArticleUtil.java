@@ -1,19 +1,22 @@
 package web.api.util;
 
+import web.api.domain.arcticle.AbstractArticleEntity;
+import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.HashTag;
-import web.api.domain.arcticle.news.NewsArticleEntity;
-import web.api.domain.arcticle.woman.WomanArticleEntity;
+import web.api.domain.arcticle.dream.DreamBookArticleEntity;
+import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.unit.article.ArticleCategoryDto;
 import web.api.dto.unit.article.ArticleDto;
 import web.api.dto.unit.article.ShortArticleDto;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Created by oleht on 19.10.2018
  */
-public class ShortArticleUtil {
+public class ArticleUtil {
 
     public static String cutArticleContent(String content) {
         return cutToShort(content, 120);
@@ -39,33 +42,19 @@ public class ShortArticleUtil {
     }
 
     public static ShortArticleDto buildShortArticle(ArticleDto e) {
-        return new ShortArticleDto<>(e.getId(), ShortArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory(), e.getHashTags());
+        return new ShortArticleDto<>(e.getId(), ArticleUtil.cutShortContent(e.getContent()), ArticleCategoryDto.getNewsCategory(), e.getHashTags());
     }
 
-    public static ShortArticleDto buildShortArticle(WomanArticleEntity e) {
+    public static ShortArticleDto buildShortArticle(AbstractArticleEntity e, ArticleCategory category) {
         return new ShortArticleDto<>(e.getId(),
-                ShortArticleUtil.cutShortContent(e.getContent()),
-                ArticleCategoryDto.getWomanCategory(),
+                ArticleUtil.cutShortContent(e.getContent()),
+                ArticleCategoryDto.getArticleCategoryDto(category),
                 HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
                         .collect(Collectors.toList()));
     }
 
-    public static ShortArticleDto buildShortArticle(NewsArticleEntity e) {
-        return new ShortArticleDto<>(e.getId(),
-                ShortArticleUtil.cutShortContent(e.getContent()),
-                ArticleCategoryDto.getNewsCategory(),
-                HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
-                        .collect(Collectors.toList()));
-    }
-
-    public static ShortArticleDto buildNewest(NewsArticleEntity e) {
-        return new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getNewsCategory(),
-                HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
-                        .collect(Collectors.toList()));
-    }
-
-    public static ShortArticleDto buildNewest(WomanArticleEntity e) {
-        return new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getWomanCategory(),
+    public static ShortArticleDto buildNewest(AbstractArticleEntity e, ArticleCategory category) {
+        return new ShortArticleDto<>(e.getId(), e.getHotContent(), ArticleCategoryDto.getArticleCategoryDto(category),
                 HashTagUtil.getHashTags(e).stream().map(HashTag::buildById)
                         .collect(Collectors.toList()));
     }

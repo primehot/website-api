@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.news.NewsArticleEntityToDto;
+import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.ImageProjection;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
@@ -21,7 +22,7 @@ import web.api.exception.NotFoundException;
 import web.api.repository.NewsArticleRepository;
 import web.api.util.HashTagUtil;
 import web.api.util.ImageUtil;
-import web.api.util.ShortArticleUtil;
+import web.api.util.ArticleUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,13 +50,13 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     private NewsArticleEntityToDto toDto;
     private NewsArticleRepository repository;
 
-    public NewsArticleServiceImpl(NewsArticleEntityToDto newsArticleEntityToDto, NewsArticleRepository repository) {
-        this.toDto = newsArticleEntityToDto;
+    public NewsArticleServiceImpl(NewsArticleEntityToDto toDto, NewsArticleRepository repository) {
+        this.toDto = toDto;
         this.repository = repository;
     }
 
     @Override
-    public byte[] getArticleImage(Long articleId) {
+    public byte[] getMainImage(Long articleId) {
         Optional<ImageProjection> item = repository.findArticleImageById(articleId);
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
@@ -70,12 +71,6 @@ public class NewsArticleServiceImpl implements NewsArticleService {
             return toDto.convert(item.get());
         }
         throw new NotFoundException("Not found NewsArticle with id: " + id);
-    }
-
-    @Override
-    public ArticleDto getMain() {
-        NewsArticleEntity item = repository.findAll(PageRequest.of(0, 1, byDateAndTimes)).getContent().get(0);
-        return toDto.convert(item);
     }
 
     @Override
@@ -120,9 +115,9 @@ public class NewsArticleServiceImpl implements NewsArticleService {
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
-        articles.forEach(e -> e.setContent(ShortArticleUtil.cutArticleContent(e.getContent())));
+        articles.forEach(e -> e.setContent(ArticleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(ShortArticleUtil::buildShortArticle).collect(Collectors.toList());
+                .stream().map(ArticleUtil::buildShortArticle).collect(Collectors.toList());
 
         ArticleNavigationBarDto<ArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);
@@ -154,8 +149,8 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     private AdditionalArticlesDto getAdditional(List<NewsArticleEntity> top10) {
         AdditionalArticlesDto<ShortArticleDto> dto = new AdditionalArticlesDto<>();
-        dto.setNewest(top10.subList(0, newestSize).stream().map(ShortArticleUtil::buildNewest).collect(Collectors.toList()));
-        dto.setRecommended(top10.subList(newestSize, newestSize + recommendedSize).stream().map(ShortArticleUtil::buildShortArticle).collect(Collectors.toList()));
+        dto.setNewest(top10.subList(0, newestSize).stream().map(e -> ArticleUtil.buildNewest(e, ArticleCategory.NEWS)).collect(Collectors.toList()));
+        dto.setRecommended(top10.subList(newestSize, newestSize + recommendedSize).stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.NEWS)).collect(Collectors.toList()));
 
         return dto;
     }

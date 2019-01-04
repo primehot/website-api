@@ -21,7 +21,7 @@ public interface NewsArticleRepository extends PagingAndSortingRepository<NewsAr
     @Query("SELECT n from NewsArticleEntity n where n.creationDate > :dateBefore order by n.timesVisited, n.creationDate")
     List<NewsArticleEntity> getRecommended(@Param("dateBefore") Timestamp dateBefore, Pageable pageable);
 
-    @Query("SELECT a.image as image from NewsArticleEntity a where a.id = :articleId")
+    @Query("SELECT a.mainImage as image from NewsArticleEntity a where a.id = :articleId")
     Optional<ImageProjection> findArticleImageById(@Param("articleId") long articleId);
 
     @Query("SELECT n from NewsArticleEntity n "

@@ -8,11 +8,7 @@ import web.api.dto.unit.article.ArticleDto;
 /**
  * Created by oleht on 12.10.2018
  */
-public interface ArticleService {
-
-    byte[] getMainImage(Long articleId);
-
-    ArticleDto getById(Long id);
+public interface ArticleExtendedService extends ArticleService {
 
     /**
      * We start from page 1 instead of 0. Because page 0 is reserved for recommended and newest data
@@ -20,10 +16,11 @@ public interface ArticleService {
      * @param size
      * @return PageableDto<ArticleDto>
      */
-    PageableDto<ArticleDto> getPage(int page, int size);
-    PageableDto<ArticleDto> getHashTagPage(int hashTagId, int page, int size);
+    PageableDto<ArticleDto> getTopicPage(int topicId, int page, int size);
+
+    ArticleNavigationBarDto getNavigationBarData();
 
     AdditionalArticlesDto getAdditionalArticles();
-    AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId);
+    AdditionalArticlesDto getAdditionalArticlesByTopic(int topicId);
 
 }

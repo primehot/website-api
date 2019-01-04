@@ -18,6 +18,10 @@ public class ArticleCategoryDto extends AbstractDto<Integer> {
         this.name = name;
     }
 
+    public static ArticleCategoryDto getArticleCategoryDto(ArticleCategory category) {
+        return new ArticleCategoryDto(category.getId(), category.getName());
+    }
+
     public static ArticleCategoryDto getNewsCategory() {
         return new ArticleCategoryDto(ArticleCategory.NEWS.getId(), ArticleCategory.NEWS.getName());
     }

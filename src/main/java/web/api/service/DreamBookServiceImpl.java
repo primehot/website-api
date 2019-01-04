@@ -1,5 +1,6 @@
 package web.api.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,9 @@ import web.api.dto.component.DreamBookNavigationBarDto;
 import web.api.dto.component.DreamTitlePageDto;
 import web.api.dto.unit.DreamBookDto;
 import web.api.dto.unit.ShortDreamBookDto;
+import web.api.repository.DreamBookArticleRepository;
 import web.api.repository.DreamBookRepository;
-import web.api.util.ShortArticleUtil;
+import web.api.util.ArticleUtil;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,12 +32,23 @@ public class DreamBookServiceImpl implements DreamBookService {
     private final Sort byDateAndTimes = Sort.by(Sort.Order.asc("creationDate"), Sort.Order.desc("timesVisited"));
     private final Sort byTimes = Sort.by(Sort.Direction.DESC, "timesVisited");
 
+    @Value("${page.size}")
+    private Integer pageSize;
+    @Value("${recommended.size}")
+    private Integer recommendedSize;
+    @Value("${newest.size}")
+    private Integer newestSize;
+    @Value("${navigation.size}")
+    private Integer navigationSize;
+
     private DreamBookRepository dreamBookRepository;
+    private DreamBookArticleRepository dreamBookArticleRepository;
     private DreamBookEntityToShortDto toShortDto;
     private DreamBookEntityToDto toDto;
 
-    public DreamBookServiceImpl(DreamBookRepository dreamBookRepository, DreamBookEntityToShortDto toShortDto, DreamBookEntityToDto toDto) {
+    public DreamBookServiceImpl(DreamBookRepository dreamBookRepository, DreamBookArticleRepository dreamBookArticleRepository, DreamBookEntityToShortDto toShortDto, DreamBookEntityToDto toDto) {
         this.dreamBookRepository = dreamBookRepository;
+        this.dreamBookArticleRepository = dreamBookArticleRepository;
         this.toShortDto = toShortDto;
         this.toDto = toDto;
     }
@@ -46,7 +59,7 @@ public class DreamBookServiceImpl implements DreamBookService {
         Collection<ShortDreamBookDto> topVisited = dreamBookRepository.findAll(PageRequest.of(0, 9, byTimes)).getContent()
                 .stream().map(e -> {
                     ShortDreamBookDto d = toShortDto.convert(e);
-                    d.setData(ShortArticleUtil.cutShortContent(e.getContent()));
+                    d.setData(ArticleUtil.cutShortContent(e.getContent()));
                     return d;
                 }).collect(Collectors.toList());
 

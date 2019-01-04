@@ -21,7 +21,7 @@ public class AbstractArticleEntity<T extends Number> extends AbstractEntity<T> {
 
     private String hotContent;
     private String content;
-    private Byte[] image;
+    private Byte[] mainImage;
     private Boolean main = false;
 
     private String hashTags = "";
