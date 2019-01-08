@@ -8,7 +8,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.news.NewsArticleEntityToDto;
+import web.api.converter.news.NewsArticleEntityViewToShortDto;
 import web.api.domain.arcticle.ArticleCategory;
+import web.api.domain.arcticle.IdProjection;
 import web.api.domain.arcticle.ImageProjection;
 import web.api.domain.arcticle.news.NewsArticleEntity;
 import web.api.domain.arcticle.news.NewsTopic;
@@ -20,6 +22,7 @@ import web.api.dto.unit.article.ArticleDto;
 import web.api.dto.unit.article.ShortArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.NewsArticleRepository;
+import web.api.repository.NewsArticleViewRepository;
 import web.api.util.ArticleUtil;
 import web.api.util.HashTagUtil;
 import web.api.util.ImageUtil;
@@ -48,16 +51,20 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     private Integer navigationSize;
 
     private NewsArticleEntityToDto toDto;
-    private NewsArticleRepository repository;
+    private NewsArticleEntityViewToShortDto toShortDto;
+    private NewsArticleRepository newsArticleRepository;
+    private NewsArticleViewRepository newsArticleViewRepository;
 
-    public NewsArticleServiceImpl(NewsArticleEntityToDto toDto, NewsArticleRepository repository) {
+    public NewsArticleServiceImpl(NewsArticleEntityToDto toDto, NewsArticleEntityViewToShortDto toShortDto, NewsArticleRepository newsArticleRepository, NewsArticleViewRepository newsArticleViewRepository) {
         this.toDto = toDto;
-        this.repository = repository;
+        this.toShortDto = toShortDto;
+        this.newsArticleRepository = newsArticleRepository;
+        this.newsArticleViewRepository = newsArticleViewRepository;
     }
 
     @Override
     public byte[] getMainImage(Long articleId) {
-        Optional<ImageProjection> item = repository.findArticleImageById(articleId);
+        Optional<ImageProjection> item = newsArticleRepository.findArticleImageById(articleId);
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -66,18 +73,21 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public ArticleDto getById(Long id) {
-        Optional<NewsArticleEntity> item = repository.findById(id);
-        if (item.isPresent()) {
-            return toDto.convert(item.get());
-        }
-        throw new NotFoundException("Not found NewsArticle with id: " + id);
+        NewsArticleEntity article = newsArticleRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found NewsArticle with id: " + id));
+        IdProjection viewId = newsArticleViewRepository.getIdByNewsId(id).orElseThrow(() -> new NotFoundException("Not found NewsArticleView with newsId: " + id));
+
+        ArticleDto dto = toDto.convert(article);
+        newsArticleViewRepository.findById(viewId.getId() - 1).ifPresent(e -> dto.setPrevious(toShortDto.convert(e)));
+        newsArticleViewRepository.findById(viewId.getId() + 1).ifPresent(e -> dto.setNext(toShortDto.convert(e)));
+
+        return dto;
     }
 
     @Override
     @Transactional(readOnly = true)
     public PageableDto<ArticleDto> getPage(int page, int size) {
         validatePageRequest(page, size);
-        Page<NewsArticleEntity> result = repository.findAll(PageRequest.of(page, size, byDateAndTimes));
+        Page<NewsArticleEntity> result = newsArticleRepository.findAll(PageRequest.of(page, size, byDateAndTimes));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -86,7 +96,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Transactional(readOnly = true)
     public PageableDto<ArticleDto> getTopicPage(int topicId, int page, int size) {
         validatePageRequest(page, size);
-        Page<NewsArticleEntity> result = repository.findAllByNewsTopic(topicId, PageRequest.of(page, size, byDateAndTimes));
+        Page<NewsArticleEntity> result = newsArticleRepository.findAllByNewsTopic(topicId, PageRequest.of(page, size, byDateAndTimes));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -94,7 +104,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Override
     public PageableDto<ArticleDto> getHashTagPage(int hashTagId, int page, int size) {
         validatePageRequest(page, size);
-        Page<NewsArticleEntity> result = repository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(page, size, byDateAndTimes));
+        Page<NewsArticleEntity> result = newsArticleRepository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(page, size, byDateAndTimes));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -111,7 +121,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Override
     public ArticleNavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(NewsTopic.values()).map(TopicDto::of).collect(Collectors.toList());
-        List<ArticleDto> top10 = repository.findAll(PageRequest.of(1, navigationSize, byDateAndTimes))
+        List<ArticleDto> top10 = newsArticleRepository.findAll(PageRequest.of(1, navigationSize, byDateAndTimes))
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
@@ -131,19 +141,19 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Override
     @Transactional(readOnly = true)
     public AdditionalArticlesDto getAdditionalArticles() {
-        List<NewsArticleEntity> top10 = repository.findAll(PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<NewsArticleEntity> top10 = newsArticleRepository.findAll(PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
         return getAdditional(top10);
     }
 
     @Override
     public AdditionalArticlesDto getAdditionalArticlesByTopic(int topicId) {
-        List<NewsArticleEntity> top10 = repository.findAllByNewsTopic(topicId, PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<NewsArticleEntity> top10 = newsArticleRepository.findAllByNewsTopic(topicId, PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
         return getAdditional(top10);
     }
 
     @Override
     public AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId) {
-        List<NewsArticleEntity> top10 = repository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<NewsArticleEntity> top10 = newsArticleRepository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
         return getAdditional(top10);
     }
 

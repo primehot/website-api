@@ -12,6 +12,7 @@ public interface ArticleExtendedService extends ArticleService {
 
     /**
      * We start from page 1 instead of 0. Because page 0 is reserved for recommended and newest data
+     *
      * @param page
      * @param size
      * @return PageableDto<ArticleDto>
@@ -21,6 +22,7 @@ public interface ArticleExtendedService extends ArticleService {
     ArticleNavigationBarDto getNavigationBarData();
 
     AdditionalArticlesDto getAdditionalArticles();
+
     AdditionalArticlesDto getAdditionalArticlesByTopic(int topicId);
 
 }

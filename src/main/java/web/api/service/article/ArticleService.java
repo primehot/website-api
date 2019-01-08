@@ -1,7 +1,6 @@
 package web.api.service.article;
 
 import web.api.dto.component.AdditionalArticlesDto;
-import web.api.dto.component.ArticleNavigationBarDto;
 import web.api.dto.unit.PageableDto;
 import web.api.dto.unit.article.ArticleDto;
 
@@ -16,14 +15,17 @@ public interface ArticleService {
 
     /**
      * We start from page 1 instead of 0. Because page 0 is reserved for recommended and newest data
+     *
      * @param page
      * @param size
      * @return PageableDto<ArticleDto>
      */
     PageableDto<ArticleDto> getPage(int page, int size);
+
     PageableDto<ArticleDto> getHashTagPage(int hashTagId, int page, int size);
 
     AdditionalArticlesDto getAdditionalArticles();
+
     AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId);
 
 }

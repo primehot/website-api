@@ -3,14 +3,11 @@ package web.api.util;
 import web.api.domain.arcticle.AbstractArticleEntity;
 import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.HashTag;
-import web.api.domain.arcticle.dream.DreamBookArticleEntity;
-import web.api.dto.component.AdditionalArticlesDto;
 import web.api.dto.unit.article.ArticleCategoryDto;
 import web.api.dto.unit.article.ArticleDto;
 import web.api.dto.unit.article.ShortArticleDto;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**

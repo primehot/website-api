@@ -5,12 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import web.api.domain.arcticle.ImageProjection;
 import web.api.domain.arcticle.ArticleRankedProjection;
+import web.api.domain.arcticle.ImageProjection;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

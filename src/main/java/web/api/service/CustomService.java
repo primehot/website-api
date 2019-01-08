@@ -14,5 +14,6 @@ public interface CustomService {
     PageableDto getTagsPage(int id, int page, int size);
 
     AdditionalArticlesDto getAdditionalData();
+
     AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId);
 }

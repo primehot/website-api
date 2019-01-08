@@ -14,4 +14,7 @@ public class ArticleDto extends AbstractArticleCategoryDto<Long> {
     private String content;
     private String topic;
     private Long timesVisited;
+
+    private ShortArticleDto previous;
+    private ShortArticleDto next;
 }

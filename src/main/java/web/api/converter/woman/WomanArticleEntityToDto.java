@@ -3,7 +3,6 @@ package web.api.converter.woman;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import web.api.domain.arcticle.ArticleCategory;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
 import web.api.dto.unit.article.ArticleCategoryDto;

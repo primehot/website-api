@@ -20,7 +20,7 @@ public class TagDto extends AbstractDto<Integer> {
         this.name = name;
     }
 
-    public static TagDto of(HashTag hashTag){
+    public static TagDto of(HashTag hashTag) {
         return new TagDto(hashTag.getId(), hashTag.toString(), hashTag.getName());
     }
 }

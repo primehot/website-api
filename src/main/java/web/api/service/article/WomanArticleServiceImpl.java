@@ -7,7 +7,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.api.converter.woman.WomanArticleEntityToDto;
+import web.api.converter.woman.WomanArticleViewEntityToShortDto;
 import web.api.domain.arcticle.ArticleCategory;
+import web.api.domain.arcticle.IdProjection;
 import web.api.domain.arcticle.ImageProjection;
 import web.api.domain.arcticle.woman.WomanArticleEntity;
 import web.api.domain.arcticle.woman.WomanTopic;
@@ -19,9 +21,10 @@ import web.api.dto.unit.article.ArticleDto;
 import web.api.dto.unit.article.ShortArticleDto;
 import web.api.exception.NotFoundException;
 import web.api.repository.WomanArticleRepository;
+import web.api.repository.WomanArticleViewRepository;
+import web.api.util.ArticleUtil;
 import web.api.util.HashTagUtil;
 import web.api.util.ImageUtil;
-import web.api.util.ArticleUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,16 +49,20 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     private Integer navigationSize;
 
     private WomanArticleEntityToDto toDto;
-    private WomanArticleRepository repository;
+    private WomanArticleViewEntityToShortDto toShortDto;
+    private WomanArticleRepository womanArticleRepository;
+    private WomanArticleViewRepository womanArticleViewRepository;
 
-    public WomanArticleServiceImpl(WomanArticleEntityToDto toDto, WomanArticleRepository repository) {
+    public WomanArticleServiceImpl(WomanArticleEntityToDto toDto, WomanArticleViewEntityToShortDto toShortDto, WomanArticleRepository womanArticleRepository, WomanArticleViewRepository womanArticleViewRepository) {
         this.toDto = toDto;
-        this.repository = repository;
+        this.toShortDto = toShortDto;
+        this.womanArticleRepository = womanArticleRepository;
+        this.womanArticleViewRepository = womanArticleViewRepository;
     }
 
     @Override
     public byte[] getMainImage(Long articleId) {
-        Optional<ImageProjection> item = repository.findArticleImageById(articleId);
+        Optional<ImageProjection> item = womanArticleRepository.findArticleImageById(articleId);
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -64,17 +71,20 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     public ArticleDto getById(Long id) {
-        Optional<WomanArticleEntity> item = repository.findById(id);
-        if (item.isPresent()) {
-            return toDto.convert(item.get());
-        }
-        throw new NotFoundException("Not found WomanArticle with id: " + id);
+        WomanArticleEntity article = womanArticleRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found WomanArticle with id: " + id));
+        IdProjection viewId = womanArticleViewRepository.getIdByWomanId(id).orElseThrow(() -> new NotFoundException("Not found WomanArticleView with newsId: " + id));
+
+        ArticleDto dto = toDto.convert(article);
+        womanArticleViewRepository.findById(viewId.getId() - 1).ifPresent(e -> dto.setPrevious(toShortDto.convert(e)));
+        womanArticleViewRepository.findById(viewId.getId() + 1).ifPresent(e -> dto.setNext(toShortDto.convert(e)));
+
+        return dto;
     }
 
     @Override
     @Transactional(readOnly = true)
     public PageableDto<ArticleDto> getPage(int page, int size) {
-        Page<WomanArticleEntity> result = repository.findAll(PageRequest.of(page, size));
+        Page<WomanArticleEntity> result = womanArticleRepository.findAll(PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -82,7 +92,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     @Transactional(readOnly = true)
     public PageableDto<ArticleDto> getTopicPage(int topicId, int page, int size) {
-        Page<WomanArticleEntity> result = repository.findAllByWomanTopic(topicId, PageRequest.of(page, size));
+        Page<WomanArticleEntity> result = womanArticleRepository.findAllByWomanTopic(topicId, PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -90,7 +100,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     public ArticleNavigationBarDto getNavigationBarData() {
         List<TopicDto> topics = Arrays.stream(WomanTopic.values()).map(TopicDto::of).collect(Collectors.toList());
-        List<ArticleDto> top10 = repository.findAll(PageRequest.of(1, navigationSize, byDateAndTimes))
+        List<ArticleDto> top10 = womanArticleRepository.findAll(PageRequest.of(1, navigationSize, byDateAndTimes))
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
@@ -109,7 +119,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     public PageableDto<ArticleDto> getHashTagPage(int hashTagId, int page, int size) {
-        Page<WomanArticleEntity> result = repository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(page, size));
+        Page<WomanArticleEntity> result = womanArticleRepository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(page, size));
 
         return new PageableDto<>(result.getContent().stream().map(e -> toDto.convert(e)).collect(Collectors.toList()), result.getTotalPages(), result.getTotalElements());
     }
@@ -117,19 +127,19 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     @Transactional(readOnly = true)
     public AdditionalArticlesDto getAdditionalArticles() {
-        List<WomanArticleEntity> top10 = repository.findAll(PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<WomanArticleEntity> top10 = womanArticleRepository.findAll(PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
         return getAdditional(top10);
     }
 
     @Override
     public AdditionalArticlesDto getAdditionalArticlesByTopic(int topicId) {
-        List<WomanArticleEntity> top10 = repository.findAllByWomanTopic(topicId, PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<WomanArticleEntity> top10 = womanArticleRepository.findAllByWomanTopic(topicId, PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
         return getAdditional(top10);
     }
 
     @Override
     public AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId) {
-        List<WomanArticleEntity> top10 = repository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<WomanArticleEntity> top10 = womanArticleRepository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
         return getAdditional(top10);
     }
 

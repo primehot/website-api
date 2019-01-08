@@ -1,6 +1,7 @@
 package web.api.dto.unit.article;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import web.api.dto.unit.HashTagDto;
 
@@ -11,7 +12,9 @@ import java.util.List;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ShortArticleDto<T extends Number> extends AbstractArticleCategoryDto<T> {
+    private String title;
     private String shortContent;
 
     public ShortArticleDto(T id, String shortContent, ArticleCategoryDto articleCategory, List<HashTagDto> hashTags) {

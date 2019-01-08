@@ -5,16 +5,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import web.api.dto.component.AdditionalArticlesDto;
-import web.api.dto.component.DreamBookNavigationBarDto;
-import web.api.dto.component.DreamTitlePageDto;
-import web.api.dto.unit.DreamBookDto;
 import web.api.dto.unit.article.ArticleDto;
 import web.api.service.DreamBookService;
 import web.api.service.article.DreamBookArticleService;
-
-import java.util.List;
 
 /**
  * Created by oleht on 20.11.2018
