@@ -22,8 +22,8 @@ public interface DreamBookRepository extends PagingAndSortingRepository<DreamBoo
     Page<DreamBookTitlesProjection> findMainTitles(Pageable pageable);
 
     @Query(
-            value = "SELECT ts_headline(db.title, q, 'StartSel=<b>, StopSel=</b>') AS title, " +
-                    " ts_headline(db.content, q, 'StartSel=<b>, StopSel=</b>') AS content, " +
+            value = "SELECT ts_headline('russian', db.title, q, 'StartSel=<b>, StopSel=</b>') AS title, " +
+                    " ts_headline('russian', db.content, q, 'StartSel=<b>, StopSel=</b>') AS content, " +
                     " db.author AS author, " +
                     " ts_rank_cd(db.document_tokens, q) AS rank " +
                     "  FROM dream_book AS db, " +

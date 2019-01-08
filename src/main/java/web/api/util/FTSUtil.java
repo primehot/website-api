@@ -6,15 +6,15 @@ package web.api.util;
 public class FTSUtil {
 
     public static String or(String phrase) {
-        return phrase.replaceAll(" ", "|");
+        return phrase.replaceAll(" ", " | ");
     }
 
     public static String and(String phrase) {
-        return phrase.replaceAll(" ", "&");
+        return phrase.replaceAll(" ", " & ");
     }
 
     public static String not(String phrase) {
-        return phrase.replaceAll(" ", "!");
+        return phrase.replaceAll(" ", " ! ");
     }
 
 }
