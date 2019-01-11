@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import web.api.application.domain.arcticle.news.NewsTopic;
 import web.api.application.dto.component.AdditionalArticlesDto;
 import web.api.application.dto.component.ArticleNavigationBarDto;
 import web.api.application.dto.unit.PageableDto;
@@ -14,7 +15,9 @@ import web.api.application.domain.arcticle.woman.WomanTopic;
 import web.api.application.dto.unit.TopicDto;
 import web.api.application.service.article.WomanArticleService;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by oleht on 14.10.2018
@@ -65,7 +68,7 @@ public class WomanArticleController {
     @GetMapping("/topics")
     @ResponseBody
     public List<TopicDto> getTopic() {
-        return null;
+        return Arrays.stream(WomanTopic.values()).map(TopicDto::of).collect(Collectors.toList());
     }
 
     @GetMapping("/navbar")
