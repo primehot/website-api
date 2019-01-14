@@ -1,8 +1,8 @@
 package web.api.application.util;
 
-import web.api.application.domain.arcticle.AbstractArticleEntity;
-import web.api.application.domain.arcticle.ArticleCategory;
-import web.api.application.domain.arcticle.HashTag;
+import web.api.application.domain.entity.arcticle.AbstractArticleEntity;
+import web.api.application.domain.ArticleCategory;
+import web.api.application.domain.HashTag;
 import web.api.application.dto.unit.article.ArticleDto;
 import web.api.application.dto.unit.article.ArticleCategoryDto;
 import web.api.application.dto.unit.article.ShortArticleDto;

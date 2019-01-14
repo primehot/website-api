@@ -1,8 +1,9 @@
 package web.api.application.dto.unit.article;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import web.api.application.domain.arcticle.ArticleCategory;
+import web.api.application.domain.ArticleCategory;
 import web.api.application.dto.AbstractDto;
 
 /**
@@ -10,6 +11,7 @@ import web.api.application.dto.AbstractDto;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ArticleCategoryDto extends AbstractDto<Integer> {
     private String name;
 

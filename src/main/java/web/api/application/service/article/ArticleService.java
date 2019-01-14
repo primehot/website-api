@@ -18,7 +18,7 @@ public interface ArticleService {
      *
      * @param page
      * @param size
-     * @return PageableDto<ArticleDto>
+     * @return PageableDto<ArticleDraftDto>
      */
     PageableDto<ArticleDto> getPage(int page, int size);
 

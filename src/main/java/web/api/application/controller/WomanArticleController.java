@@ -6,12 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import web.api.application.domain.arcticle.news.NewsTopic;
 import web.api.application.dto.component.AdditionalArticlesDto;
 import web.api.application.dto.component.ArticleNavigationBarDto;
 import web.api.application.dto.unit.PageableDto;
 import web.api.application.dto.unit.article.ArticleDto;
-import web.api.application.domain.arcticle.woman.WomanTopic;
+import web.api.application.domain.WomanTopic;
 import web.api.application.dto.unit.TopicDto;
 import web.api.application.service.article.WomanArticleService;
 

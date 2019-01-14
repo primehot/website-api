@@ -1,6 +1,7 @@
 package web.api.application.dto.unit;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import web.api.application.dto.AbstractDto;
 
@@ -9,6 +10,7 @@ import web.api.application.dto.AbstractDto;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class HashTagDto extends AbstractDto<Integer> {
     private String name;
 

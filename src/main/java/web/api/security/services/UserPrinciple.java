@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import web.api.security.model.UserEntity;
+import web.api.security.domain.UserEntity;
 
 import java.util.Collection;
 import java.util.List;

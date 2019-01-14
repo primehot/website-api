@@ -2,8 +2,8 @@ package web.api.security.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import web.api.security.model.RoleEntity;
-import web.api.security.model.RoleName;
+import web.api.security.domain.RoleEntity;
+import web.api.security.domain.RoleName;
 
 import java.util.Optional;
 

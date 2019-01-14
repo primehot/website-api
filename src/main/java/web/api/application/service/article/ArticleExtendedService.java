@@ -15,7 +15,7 @@ public interface ArticleExtendedService extends ArticleService {
      *
      * @param page
      * @param size
-     * @return PageableDto<ArticleDto>
+     * @return PageableDto<ArticleDraftDto>
      */
     PageableDto<ArticleDto> getTopicPage(int topicId, int page, int size);
 

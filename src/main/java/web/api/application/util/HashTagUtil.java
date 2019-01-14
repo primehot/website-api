@@ -1,6 +1,7 @@
 package web.api.application.util;
 
-import web.api.application.domain.arcticle.AbstractArticleEntity;
+import web.api.application.domain.entity.arcticle.AbstractArticleEntity;
+import web.api.application.domain.entity.article_draft.AbstractArticleDraftEntity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,10 @@ public class HashTagUtil {
     }
 
     public static List<Integer> getHashTags(AbstractArticleEntity e) {
+        return getHashTags(e.getHashTags());
+    }
+
+    public static List<Integer> getHashTags(AbstractArticleDraftEntity e) {
         return getHashTags(e.getHashTags());
     }
 

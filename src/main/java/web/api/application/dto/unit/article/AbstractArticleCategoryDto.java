@@ -2,7 +2,7 @@ package web.api.application.dto.unit.article;
 
 import lombok.Getter;
 import lombok.Setter;
-import web.api.application.domain.arcticle.HashTag;
+import web.api.application.domain.HashTag;
 import web.api.application.dto.AbstractDto;
 import web.api.application.dto.unit.HashTagDto;
 

@@ -10,7 +10,7 @@ import web.api.application.dto.component.AdditionalArticlesDto;
 import web.api.application.dto.component.ArticleNavigationBarDto;
 import web.api.application.dto.unit.PageableDto;
 import web.api.application.dto.unit.article.ArticleDto;
-import web.api.application.domain.arcticle.news.NewsTopic;
+import web.api.application.domain.NewsTopic;
 import web.api.application.dto.unit.TopicDto;
 import web.api.application.service.article.NewsArticleService;
 

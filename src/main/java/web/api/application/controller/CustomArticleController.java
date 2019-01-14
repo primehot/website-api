@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import web.api.application.domain.arcticle.HashTag;
+import web.api.application.domain.HashTag;
 import web.api.application.dto.component.AdditionalArticlesDto;
 import web.api.application.dto.unit.HashTagDto;
 import web.api.application.dto.unit.PageableDto;

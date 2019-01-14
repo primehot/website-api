@@ -1,16 +1,18 @@
 package web.api.application.dto.unit;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import web.api.application.dto.AbstractDto;
-import web.api.application.domain.arcticle.news.NewsTopic;
-import web.api.application.domain.arcticle.woman.WomanTopic;
+import web.api.application.domain.NewsTopic;
+import web.api.application.domain.WomanTopic;
 
 /**
  * Created by oleht on 16.10.2018
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class TopicDto extends AbstractDto<Integer> {
     private String value;
     private String name;

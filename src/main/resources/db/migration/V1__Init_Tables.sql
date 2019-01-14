@@ -32,6 +32,7 @@ CREATE TABLE dream_book_article (
   main                   BOOLEAN,
   title                  VARCHAR(255),
   document_tokens        TSVECTOR,
+  author                 VARCHAR(255),
   PRIMARY KEY (id)
 );
 
@@ -54,6 +55,7 @@ CREATE TABLE news_article (
   news_topic             INT4,
   title                  VARCHAR(255),
   document_tokens        TSVECTOR,
+  author                 VARCHAR(255),
   PRIMARY KEY (id)
 );
 
@@ -76,6 +78,7 @@ CREATE TABLE woman_article (
   title                  VARCHAR(255),
   woman_topic            INT4,
   document_tokens        TSVECTOR,
+  author                 VARCHAR(255),
   PRIMARY KEY (id)
 );
 

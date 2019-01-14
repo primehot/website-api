@@ -6,18 +6,18 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
-import web.api.application.domain.arcticle.HashTag;
-import web.api.application.domain.arcticle.AbstractArticleEntity;
-import web.api.application.domain.arcticle.dream.DreamBookArticleEntity;
-import web.api.application.domain.arcticle.news.NewsArticleEntity;
-import web.api.application.domain.arcticle.news.NewsTopic;
-import web.api.application.domain.arcticle.woman.WomanArticleEntity;
-import web.api.application.domain.arcticle.woman.WomanTopic;
-import web.api.application.domain.dream_book.DreamBookEntity;
-import web.api.application.repository.DreamBookArticleRepository;
-import web.api.application.repository.DreamBookRepository;
-import web.api.application.repository.NewsArticleRepository;
-import web.api.application.repository.WomanArticleRepository;
+import web.api.application.domain.HashTag;
+import web.api.application.domain.entity.arcticle.AbstractArticleEntity;
+import web.api.application.domain.entity.arcticle.dream.DreamBookArticleEntity;
+import web.api.application.domain.entity.arcticle.news.NewsArticleEntity;
+import web.api.application.domain.NewsTopic;
+import web.api.application.domain.entity.arcticle.woman.WomanArticleEntity;
+import web.api.application.domain.WomanTopic;
+import web.api.application.domain.entity.dream_book.DreamBookEntity;
+import web.api.application.repository.article.DreamBookArticleRepository;
+import web.api.application.repository.article.DreamBookRepository;
+import web.api.application.repository.article.NewsArticleRepository;
+import web.api.application.repository.article.WomanArticleRepository;
 import web.api.application.util.ArticleUtil;
 import web.api.application.util.ImageUtil;
 
@@ -60,12 +60,12 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         log.debug("Loading Bootstrap Data");
-        addBasicNewsArticle();
-        addBasicMainNewsArticle();
-        addBasicWomanArticle();
-        addBasicMainWomanArticle();
-        addBasicDreamBookArticle();
-        addDreamBook();
+//        addBasicNewsArticle();
+//        addBasicMainNewsArticle();
+//        addBasicWomanArticle();
+//        addBasicMainWomanArticle();
+//        addBasicDreamBookArticle();
+//        addDreamBook();
     }
 
     private void addBasicNewsArticle() {
@@ -78,7 +78,7 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             entity.addHashTag(HashTag.RELIGY);
             entity.setContent(lorem);
             entity.setHotContent("HOT " + i);
-            addImage(entity, "classpath:pictures/news/article.jpg");
+            addImage(entity, "classpath:pictures/news/article_draft.jpg");
 
             news.add(entity);
         }
@@ -114,7 +114,7 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             entity.setContent(lorem);
             entity.setHotContent("HOT " + i);
             entity.addHashTag(HashTag.MURDER);
-            addImage(entity, "classpath:pictures/woman/article.jpg");
+            addImage(entity, "classpath:pictures/woman/article_draft.jpg");
 
             womanArticles.add(entity);
         }
@@ -151,7 +151,7 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             entity.setMain(true);
             entity.addHashTag(HashTag.INSTAGRAM);
             entity.addHashTag(HashTag.RELIGY);
-            addImage(entity, "classpath:pictures/dreambook/article.jpg");
+            addImage(entity, "classpath:pictures/dreambook/article_draft.jpg");
 
             womanArticles.add(entity);
         }
