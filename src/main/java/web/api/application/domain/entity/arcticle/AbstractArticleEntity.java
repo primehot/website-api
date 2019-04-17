@@ -2,11 +2,13 @@ package web.api.application.domain.entity.arcticle;
 
 import lombok.Getter;
 import lombok.Setter;
+import web.api.application.domain.ImageEntity;
 import web.api.application.domain.entity.AbstractEntity;
 import web.api.application.domain.HashTag;
 
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static web.api.application.util.HashTagUtil.hashTagSeparator;
@@ -18,15 +20,13 @@ import static web.api.application.util.HashTagUtil.wrapHashTag;
 @MappedSuperclass
 @Setter
 @Getter
-public class AbstractArticleEntity<T extends Number> extends AbstractEntity<T> {
+public abstract class AbstractArticleEntity<T extends Number> extends AbstractEntity<T> {
 
+    private String title;
     private String hotContent;
     private String content;
-    private Byte[] mainImage;
     private Boolean main = false;
-
     private String hashTags = "";
-
     private Long timesVisited = 0L;
 
     public void addHashTag(HashTag hashTag) {
@@ -38,4 +38,6 @@ public class AbstractArticleEntity<T extends Number> extends AbstractEntity<T> {
     public void removeHashTag(HashTag hashTag) {
         this.hashTags = Arrays.stream(this.hashTags.split(hashTagSeparator)).filter(i -> i.equals(wrapHashTag(hashTag.getId()))).collect(Collectors.joining(hashTagSeparator));
     }
+
+    public abstract void setImages(List<ImageEntity> imageEntity);
 }

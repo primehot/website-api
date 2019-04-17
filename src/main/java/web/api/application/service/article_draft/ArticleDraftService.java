@@ -15,7 +15,7 @@ public interface ArticleDraftService {
 
     ArticleDraftDto getById(Long id);
 
-    ArticleDraftDto save(ArticleDraftDto article, MultipartFile mainImage) throws IOException;
+    ArticleDraftDto save(ArticleDraftDto article, MultipartFile[] mainImage) throws IOException;
 
     PageableDto<ArticleDraftDto> getPage(int page, int size);
 

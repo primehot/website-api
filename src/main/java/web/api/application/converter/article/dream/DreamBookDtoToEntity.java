@@ -5,18 +5,18 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import web.api.application.domain.entity.dream_book.DreamBookEntity;
-import web.api.application.dto.unit.article.DreamBookArticleDto;
+import web.api.application.dto.unit.DreamBookDto;
 
 /**
  * Created by oleht on 12.10.2018
  */
 @Component
-public class DreamBookDtoToEntity implements Converter<DreamBookArticleDto, DreamBookEntity> {
+public class DreamBookDtoToEntity implements Converter<DreamBookDto, DreamBookEntity> {
 
     @Synchronized
     @Nullable
     @Override
-    public DreamBookEntity convert(DreamBookArticleDto dto) {
+    public DreamBookEntity convert(DreamBookDto dto) {
         if (dto == null) {
             return null;
         }

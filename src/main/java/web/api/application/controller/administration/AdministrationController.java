@@ -36,24 +36,24 @@ public class AdministrationController {
     @PostMapping(path = "/woman/draft", consumes = {"multipart/form-data", "application/json"})
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ArticleDraftDto addWomanArticle(@RequestPart("article") @Valid ArticleDraftDto article,
-                                           @RequestPart("main-image") @Valid @NotNull @NotBlank MultipartFile mainImage) throws IOException {
-        ArticleDraftDto saved = womanArticleDraftService.save(article, mainImage);
+                                           @RequestPart("images") @Valid @NotNull @NotBlank MultipartFile[] images) throws IOException {
+        ArticleDraftDto saved = womanArticleDraftService.save(article, images);
         return saved;
     }
 
     @RequestMapping(value = "/news/draft", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ArticleDraftDto upload(@RequestPart("article") @Valid ArticleDraftDto article,
-                                  @RequestPart("mainImage") @Valid @NotNull @NotBlank MultipartFile mainImage) throws IOException {
-        ArticleDraftDto saved = newsArticleDraftService.save(article, mainImage);
+                                  @RequestPart("images") @Valid @NotNull @NotBlank MultipartFile[] images) throws IOException {
+        ArticleDraftDto saved = newsArticleDraftService.save(article, images);
         return saved;
     }
 
     @PostMapping(path = "/dreambook/draft", consumes = {"multipart/form-data", "application/json"})
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ArticleDraftDto addDreamBookArticle(@RequestPart("article") @Valid ArticleDraftDto article,
-                                               @RequestPart("main-image") @Valid @NotNull @NotBlank MultipartFile mainImage) throws IOException {
-        ArticleDraftDto saved = dreamBookArticleDraftService.save(article, mainImage);
+                                               @RequestPart("images") @Valid @NotNull @NotBlank MultipartFile[] images) throws IOException {
+        ArticleDraftDto saved = dreamBookArticleDraftService.save(article, images);
         return saved;
     }
 

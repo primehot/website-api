@@ -2,9 +2,10 @@
 
 CREATE OR REPLACE FUNCTION make_dream_boook_tsvector(title TEXT, content TEXT, author TEXT)
   RETURNS TSVECTOR AS $$
+DECLARE new_content text := ( SELECT string_agg(paragraph, ' ') from ( select 0 as id, jsonb_array_elements(content)::json->>'content' as paragraph ) as j GROUP BY id );
 BEGIN
   RETURN (setweight(to_tsvector('russian', title), 'A') ||
-          setweight(to_tsvector('russian', content), 'B') ||
+          setweight(to_tsvector('russian', new_content), 'B') ||
           setweight(to_tsvector('russian', author), 'B'));
 END
 $$
@@ -31,10 +32,11 @@ FOR EACH ROW EXECUTE PROCEDURE dream_boook_trigger();
 
 CREATE OR REPLACE FUNCTION make_dream_boook_article_tsvector(title TEXT, hot_content TEXT, content TEXT)
   RETURNS TSVECTOR AS $$
+DECLARE new_content text := ( SELECT string_agg(paragraph, ' ') from ( select 0 as id, jsonb_array_elements(content)::json->>'content' as paragraph ) as j GROUP BY id );
 BEGIN
   RETURN (setweight(to_tsvector('russian', title), 'A') ||
           setweight(to_tsvector('russian', hot_content), 'B') ||
-          setweight(to_tsvector('russian', content), 'C'));
+          setweight(to_tsvector('russian', new_content), 'C'));
 END
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;

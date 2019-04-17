@@ -1,5 +1,8 @@
 package web.api.application.bootstrap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -7,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 import web.api.application.domain.HashTag;
+import web.api.application.domain.ImageEntity;
 import web.api.application.domain.entity.arcticle.AbstractArticleEntity;
 import web.api.application.domain.entity.arcticle.dream.DreamBookArticleEntity;
 import web.api.application.domain.entity.arcticle.news.NewsArticleEntity;
@@ -14,6 +18,9 @@ import web.api.application.domain.NewsTopic;
 import web.api.application.domain.entity.arcticle.woman.WomanArticleEntity;
 import web.api.application.domain.WomanTopic;
 import web.api.application.domain.entity.dream_book.DreamBookEntity;
+import web.api.application.dto.unit.article_draft.ParagraphDto;
+import web.api.application.dto.unit.article_draft.ParagraphType;
+import web.api.application.repository.ImageRepository;
 import web.api.application.repository.article.DreamBookArticleRepository;
 import web.api.application.repository.article.DreamBookRepository;
 import web.api.application.repository.article.NewsArticleRepository;
@@ -25,12 +32,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Created by oleh.tsyupa.
  */
-@Slf4j
+@Log
 @Component
 public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -48,24 +57,28 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
     private WomanArticleRepository womanArticleRepository;
     private DreamBookRepository dreamBookRepository;
     private DreamBookArticleRepository dreamBookArticleRepository;
+    private ImageRepository imageRepository;
+    private ObjectMapper objectMapper;
 
-    public TestDataBootstrap(NewsArticleRepository newsArticleRepository, WomanArticleRepository womanArticleRepository, DreamBookRepository dreamBookRepository, DreamBookArticleRepository dreamBookArticleRepository) {
+    public TestDataBootstrap(NewsArticleRepository newsArticleRepository, WomanArticleRepository womanArticleRepository, DreamBookRepository dreamBookRepository, DreamBookArticleRepository dreamBookArticleRepository, ImageRepository imageRepository, ObjectMapper objectMapper) {
         this.newsArticleRepository = newsArticleRepository;
         this.womanArticleRepository = womanArticleRepository;
         this.dreamBookRepository = dreamBookRepository;
         this.dreamBookArticleRepository = dreamBookArticleRepository;
+        this.imageRepository = imageRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        log.debug("Loading Bootstrap Data");
-//        addBasicNewsArticle();
-//        addBasicMainNewsArticle();
-//        addBasicWomanArticle();
-//        addBasicMainWomanArticle();
-//        addBasicDreamBookArticle();
-//        addDreamBook();
+        log.log(Level.CONFIG,"Loading Bootstrap Data");
+        addBasicNewsArticle();
+        addBasicMainNewsArticle();
+        addBasicWomanArticle();
+        addBasicMainWomanArticle();
+        addBasicDreamBookArticle();
+        addDreamBook();
     }
 
     private void addBasicNewsArticle() {
@@ -76,9 +89,13 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             entity.setNewsTopic(NewsTopic.POLITICS);
             entity.addHashTag(HashTag.INSTAGRAM);
             entity.addHashTag(HashTag.RELIGY);
-            entity.setContent(lorem);
+            try {
+                entity.setContent(objectMapper.writeValueAsString(Collections.singleton(ParagraphDto.of(0,lorem, ParagraphType.NO_IMAGE))));
+            } catch (JsonProcessingException e) {
+                log.severe("Cannot convert test data");
+            }
             entity.setHotContent("HOT " + i);
-            addImage(entity, "classpath:pictures/news/article_draft.jpg");
+            addImage(entity, "classpath:pictures/news/article.jpg");
 
             news.add(entity);
         }
@@ -94,7 +111,11 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             entity.setNewsTopic(NewsTopic.TECHNOLOGY);
             entity.addHashTag(HashTag.INSTAGRAM);
             entity.addHashTag(HashTag.MURDER);
-            entity.setContent(lorem);
+            try {
+                entity.setContent(objectMapper.writeValueAsString(Collections.singleton(ParagraphDto.of(0,lorem, ParagraphType.NO_IMAGE))));
+            } catch (JsonProcessingException e) {
+                log.severe("Cannot convert test data");
+            }
             entity.setHotContent("HOT " + i);
             entity.setMain(true);
             addImage(entity, "classpath:pictures/news/main.jpg");
@@ -111,10 +132,14 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             WomanArticleEntity entity = new WomanArticleEntity();
             entity.setTitle("News number " + i);
             entity.setWomanTopic(WomanTopic.SEX);
-            entity.setContent(lorem);
+            try {
+                entity.setContent(objectMapper.writeValueAsString(Collections.singleton(ParagraphDto.of(0,lorem, ParagraphType.NO_IMAGE))));
+            } catch (JsonProcessingException e) {
+                log.severe("Cannot convert test data");
+            }
             entity.setHotContent("HOT " + i);
             entity.addHashTag(HashTag.MURDER);
-            addImage(entity, "classpath:pictures/woman/article_draft.jpg");
+            addImage(entity, "classpath:pictures/woman/article.jpg");
 
             womanArticles.add(entity);
         }
@@ -146,12 +171,16 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
         for (int i = 0; i < 10; i++) {
             DreamBookArticleEntity entity = new DreamBookArticleEntity();
             entity.setTitle("News number " + i);
-            entity.setContent(lorem);
+            try {
+                entity.setContent(objectMapper.writeValueAsString(Collections.singleton(ParagraphDto.of(0,lorem, ParagraphType.NO_IMAGE))));
+            } catch (JsonProcessingException e) {
+                log.severe("Cannot convert test data");
+            }
             entity.setHotContent("HOT " + i);
             entity.setMain(true);
             entity.addHashTag(HashTag.INSTAGRAM);
             entity.addHashTag(HashTag.RELIGY);
-            addImage(entity, "classpath:pictures/dreambook/article_draft.jpg");
+            addImage(entity, "classpath:pictures/dreambook/article.jpg");
 
             womanArticles.add(entity);
         }
@@ -164,9 +193,12 @@ public class TestDataBootstrap implements ApplicationListener<ContextRefreshedEv
             File file = ResourceUtils.getFile(classpath);
             byte[] res = Files.readAllBytes(file.toPath());
             Byte[] image = ImageUtil.convertBytes(res);
-            entity.setMainImage(image);
+            ImageEntity e = new ImageEntity();
+            e.setImage(image);
+            e = imageRepository.save(e);
+            entity.setImages(Collections.singletonList(e));
         } catch (IOException e) {
-            log.debug("Error during loading mainImage: " + classpath);
+            log.log(Level.CONFIG,"Error during loading mainImage: " + classpath);
         }
     }
 

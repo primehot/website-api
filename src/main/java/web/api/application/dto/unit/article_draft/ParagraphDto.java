@@ -3,8 +3,6 @@ package web.api.application.dto.unit.article_draft;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import web.api.application.dto.unit.TopicDto;
-import web.api.application.dto.unit.article.AbstractArticleCategoryDto;
 
 /**
  * Created by oleht on 15.10.2018
@@ -13,6 +11,15 @@ import web.api.application.dto.unit.article.AbstractArticleCategoryDto;
 @Setter
 @NoArgsConstructor
 public class ParagraphDto {
+    private Integer id;
     private String content;
-    private String typeId;
+    private ParagraphType type;
+
+    public static ParagraphDto of(Integer id, String content, ParagraphType type) {
+        ParagraphDto p = new ParagraphDto();
+        p.setId(id);
+        p.setContent(content);
+        p.setType(type);
+        return p;
+    }
 }

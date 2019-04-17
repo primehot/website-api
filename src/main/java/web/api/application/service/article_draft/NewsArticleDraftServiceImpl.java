@@ -36,7 +36,7 @@ public class NewsArticleDraftServiceImpl implements NewsArticleDraftService {
 
     @Override
     public byte[] getMainImage(Long articleId) {
-        Optional<ImageProjection> item = draftRepository.findArticleImageById(articleId);
+        Optional<ImageProjection> item = Optional.empty();
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -51,9 +51,9 @@ public class NewsArticleDraftServiceImpl implements NewsArticleDraftService {
     }
 
     @Override
-    public ArticleDraftDto save(ArticleDraftDto article, MultipartFile mainImage) throws IOException {
+    public ArticleDraftDto save(ArticleDraftDto article, MultipartFile mainImage[]) throws IOException {
         NewsArticleDraftEntity art = dtoToEntity.convert(article);
-        art.setMainImage(ImageUtil.convertBytes(mainImage.getBytes()));
+//        art.setMainImage(ImageUtil.convertBytes(mainImage.getBytes()));
 
         NewsArticleDraftEntity saved = draftRepository.save(art);
         return entityToDto.convert(saved);

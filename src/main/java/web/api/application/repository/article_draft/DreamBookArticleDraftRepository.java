@@ -13,6 +13,6 @@ import java.util.Optional;
  */
 public interface DreamBookArticleDraftRepository extends PagingAndSortingRepository<DreamBookArticleDraftEntity, Long> {
 
-    @Query("SELECT a.mainImage as image from DreamBookArticleEntity a where a.id = :articleId")
-    Optional<ImageProjection> findArticleImageById(@Param("articleId") long articleId);
+//    @Query("SELECT a.mainImage as image from DreamBookArticleEntity a where a.id = :articleId")
+//    Optional<ImageProjection> findArticleImageById(@Param("articleId") long articleId);
 }

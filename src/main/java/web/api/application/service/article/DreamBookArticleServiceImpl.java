@@ -1,6 +1,7 @@
 package web.api.application.service.article;
 
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +46,9 @@ public class DreamBookArticleServiceImpl implements DreamBookArticleService {
     @Value("${navigation.size}")
     private Integer navigationSize;
 
+    @Autowired
+    private ArticleUtil articleUtil;
+
     private DreamBookArticleEntityToDto toDto;
     private DreamBookArticleViewEntityToShortDto toShortDto;
     private DreamBookArticleRepository dreamBookArticleRepository;
@@ -59,7 +63,7 @@ public class DreamBookArticleServiceImpl implements DreamBookArticleService {
 
     @Override
     public byte[] getMainImage(Long articleId) {
-        Optional<ImageProjection> item = dreamBookArticleRepository.findArticleImageById(articleId);
+        Optional<ImageProjection> item = Optional.empty();
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -107,19 +111,21 @@ public class DreamBookArticleServiceImpl implements DreamBookArticleService {
     @Override
     @Transactional(readOnly = true)
     public AdditionalArticlesDto getAdditionalArticles() {
-        List<DreamBookArticleEntity> top10 = dreamBookArticleRepository.findAll(PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<ArticleDto> top10 = dreamBookArticleRepository.findAll(PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent()
+                .stream().map(toDto::convert).collect(Collectors.toList());
         return getAdditional(top10);
     }
 
     @Override
     public AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId) {
-        List<DreamBookArticleEntity> top10 = dreamBookArticleRepository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<ArticleDto> top10 = dreamBookArticleRepository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent()
+                .stream().map(toDto::convert).collect(Collectors.toList());
         return getAdditional(top10);
     }
 
-    private AdditionalArticlesDto getAdditional(List<DreamBookArticleEntity> top10) {
+    private AdditionalArticlesDto getAdditional(List<ArticleDto> top10) {
         AdditionalArticlesDto<ShortArticleDto> dto = new AdditionalArticlesDto<>();
-        dto.setRecommended(top10.subList(0, recommendedSize).stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.DREAMBOOK)).collect(Collectors.toList()));
+        dto.setRecommended(top10.subList(0, recommendedSize).stream().map(e -> articleUtil.buildShortArticle(e, ArticleCategory.DREAMBOOK)).collect(Collectors.toList()));
 
         return dto;
     }

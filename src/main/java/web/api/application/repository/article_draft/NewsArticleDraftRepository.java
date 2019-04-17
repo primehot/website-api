@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public interface NewsArticleDraftRepository extends PagingAndSortingRepository<NewsArticleDraftEntity, Long> {
 
-    @Query("SELECT a.mainImage as image from NewsArticleEntity a where a.id = :articleId")
-    Optional<ImageProjection> findArticleImageById(@Param("articleId") long articleId);
+//    @Query("SELECT a.mainImage as image from NewsArticleEntity a where a.id = :articleId")
+//    Optional<ImageProjection> findArticleImageById(@Param("articleId") long articleId);
 
 }

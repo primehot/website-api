@@ -1,6 +1,8 @@
 package web.api.application.converter.article_draft.news;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
@@ -16,6 +18,7 @@ import web.api.application.dto.unit.article_draft.ArticleDraftDto;
  * Created by oleht on 12.10.2018
  */
 @Component
+@Log
 public class NewsArticleDraftDtoToEntity implements Converter<ArticleDraftDto, NewsArticleDraftEntity> {
 
     @Autowired
@@ -30,7 +33,11 @@ public class NewsArticleDraftDtoToEntity implements Converter<ArticleDraftDto, N
 
         NewsArticleDraftEntity entity = new NewsArticleDraftEntity();
         entity.setTitle(dto.getTitle());
-        entity.setContent(mapper.convertValue(dto.getContent(), String.class));
+        try {
+            entity.setContent(mapper.writeValueAsString(dto.getContent()));
+        } catch (JsonProcessingException e) {
+            log.severe("Cannot convert context to json.ArticleDraftDto id: " + dto.getId());
+        }
         entity.setNewsTopic(NewsTopic.getById(dto.getTopic().getId()));
         entity.setHotContent(dto.getHotContent());
         dto.getHashTags().forEach(ht -> entity.addHashTag(HashTag.getById(ht.getId())));

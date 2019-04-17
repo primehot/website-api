@@ -22,6 +22,4 @@ public class ArticleDraftDto extends AbstractArticleCategoryDto<Long> {
     private TopicDto topic;
     private String author;
 
-    private Byte[] mainImage;
-
 }

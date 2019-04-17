@@ -1,6 +1,7 @@
 package web.api.application.service.article;
 
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,6 +51,9 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     @Value("${navigation.size}")
     private Integer navigationSize;
 
+    @Autowired
+    private ArticleUtil articleUtil;
+
     private NewsArticleEntityToDto toDto;
     private NewsArticleEntityViewToShortDto toShortDto;
     private NewsArticleRepository newsArticleRepository;
@@ -64,7 +68,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public byte[] getMainImage(Long articleId) {
-        Optional<ImageProjection> item = newsArticleRepository.findArticleImageById(articleId);
+        Optional<ImageProjection> item = Optional.empty();
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -125,9 +129,9 @@ public class NewsArticleServiceImpl implements NewsArticleService {
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
-        articles.forEach(e -> e.setContent(ArticleUtil.cutArticleContent(e.getContent())));
+        articles.forEach(e -> e.setContent(articleUtil.cutArticleContent(e.getContent())));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.NEWS)).collect(Collectors.toList());
+                .stream().map(e -> articleUtil.buildShortArticle(e, ArticleCategory.NEWS)).collect(Collectors.toList());
 
         ArticleNavigationBarDto<ArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);
@@ -160,7 +164,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     private AdditionalArticlesDto getAdditional(List<NewsArticleEntity> top10) {
         AdditionalArticlesDto<ShortArticleDto> dto = new AdditionalArticlesDto<>();
         dto.setNewest(top10.subList(0, newestSize).stream().map(e -> ArticleUtil.buildNewest(e, ArticleCategory.NEWS)).collect(Collectors.toList()));
-        dto.setRecommended(top10.subList(newestSize, newestSize + recommendedSize).stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.NEWS)).collect(Collectors.toList()));
+        dto.setRecommended(top10.subList(newestSize, newestSize + recommendedSize).stream().map(e -> articleUtil.buildShortArticle(e, ArticleCategory.NEWS)).collect(Collectors.toList()));
 
         return dto;
     }

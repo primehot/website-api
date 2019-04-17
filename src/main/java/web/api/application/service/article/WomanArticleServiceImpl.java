@@ -1,32 +1,35 @@
 package web.api.application.service.article;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import web.api.application.converter.article.woman.WomanArticleEntityToDto;
+import web.api.application.converter.article.woman.WomanArticleViewEntityToShortDto;
 import web.api.application.domain.ArticleCategory;
+import web.api.application.domain.WomanTopic;
+import web.api.application.domain.entity.arcticle.woman.WomanArticleEntity;
 import web.api.application.domain.projection.IdProjection;
 import web.api.application.domain.projection.ImageProjection;
-import web.api.application.domain.entity.arcticle.woman.WomanArticleEntity;
 import web.api.application.dto.component.AdditionalArticlesDto;
 import web.api.application.dto.component.ArticleNavigationBarDto;
 import web.api.application.dto.unit.PageableDto;
 import web.api.application.dto.unit.TopicDto;
 import web.api.application.dto.unit.article.ArticleDto;
+import web.api.application.dto.unit.article.ShortArticleDto;
+import web.api.application.dto.unit.article_draft.ParagraphDto;
 import web.api.application.exception.NotFoundException;
 import web.api.application.repository.article.WomanArticleRepository;
 import web.api.application.repository.article.WomanArticleViewRepository;
-import web.api.application.util.ImageUtil;
-import web.api.application.converter.article.woman.WomanArticleEntityToDto;
-import web.api.application.converter.article.woman.WomanArticleViewEntityToShortDto;
-import web.api.application.domain.WomanTopic;
-import web.api.application.dto.unit.article.ShortArticleDto;
 import web.api.application.util.ArticleUtil;
 import web.api.application.util.HashTagUtil;
+import web.api.application.util.ImageUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,6 +51,9 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Value("${navigation.size}")
     private Integer navigationSize;
 
+    @Autowired
+    private ArticleUtil articleUtil;
+
     private WomanArticleEntityToDto toDto;
     private WomanArticleViewEntityToShortDto toShortDto;
     private WomanArticleRepository womanArticleRepository;
@@ -62,7 +68,7 @@ public class WomanArticleServiceImpl implements WomanArticleService {
 
     @Override
     public byte[] getMainImage(Long articleId) {
-        Optional<ImageProjection> item = womanArticleRepository.findArticleImageById(articleId);
+        Optional<ImageProjection> item = Optional.empty();
         if (item.isPresent()) {
             return ImageUtil.convertBytes(item.get().getImage());
         }
@@ -104,9 +110,9 @@ public class WomanArticleServiceImpl implements WomanArticleService {
                 .stream().map(e -> toDto.convert(e)).collect(Collectors.toList());
 
         List<ArticleDto> articles = top10.subList(0, 2);
-        articles.forEach(e -> e.setContent(ArticleUtil.cutArticleContent(e.getContent())));
+        articles.forEach(e -> e.setContent(Collections.singletonList(ParagraphDto.of(0,articleUtil.cutArticleContent(e.getContent()),P))));
         List<ShortArticleDto> shortArticles = top10.subList(2, 10)
-                .stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.WOMEN)).collect(Collectors.toList());
+                .stream().map(e -> articleUtil.buildShortArticle(e, ArticleCategory.WOMEN)).collect(Collectors.toList());
 
         ArticleNavigationBarDto<ArticleDto, ShortArticleDto> dto = new ArticleNavigationBarDto<>();
         dto.setTopics(topics);
@@ -127,26 +133,29 @@ public class WomanArticleServiceImpl implements WomanArticleService {
     @Override
     @Transactional(readOnly = true)
     public AdditionalArticlesDto getAdditionalArticles() {
-        List<WomanArticleEntity> top10 = womanArticleRepository.findAll(PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<ArticleDto> top10 = womanArticleRepository.findAll(PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent()
+                .stream().map(toDto::convert).collect(Collectors.toList());
         return getAdditional(top10);
     }
 
     @Override
     public AdditionalArticlesDto getAdditionalArticlesByTopic(int topicId) {
-        List<WomanArticleEntity> top10 = womanArticleRepository.findAllByWomanTopic(topicId, PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<ArticleDto> top10 = womanArticleRepository.findAllByWomanTopic(topicId, PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent()
+                .stream().map(toDto::convert).collect(Collectors.toList());
         return getAdditional(top10);
     }
 
     @Override
     public AdditionalArticlesDto getAdditionalArticlesByTag(int hashTagId) {
-        List<WomanArticleEntity> top10 = womanArticleRepository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent();
+        List<ArticleDto> top10 = womanArticleRepository.findAllByHashTag(HashTagUtil.wrapHashTag(hashTagId), PageRequest.of(0, recommendedSize + newestSize, byDateAndTimes)).getContent()
+                .stream().map(toDto::convert).collect(Collectors.toList());
         return getAdditional(top10);
     }
 
-    private AdditionalArticlesDto getAdditional(List<WomanArticleEntity> top10) {
+    private AdditionalArticlesDto getAdditional(List<ArticleDto> top10) {
         AdditionalArticlesDto<ShortArticleDto> dto = new AdditionalArticlesDto<>();
-        dto.setNewest(top10.subList(0, newestSize).stream().map(e -> ArticleUtil.buildNewest(e, ArticleCategory.WOMEN)).collect(Collectors.toList()));
-        dto.setRecommended(top10.subList(newestSize, newestSize + recommendedSize).stream().map(e -> ArticleUtil.buildShortArticle(e, ArticleCategory.WOMEN)).collect(Collectors.toList()));
+        dto.setNewest(top10.subList(0, newestSize).stream().map(e -> articleUtil.buildNewest(e, ArticleCategory.WOMEN)).collect(Collectors.toList()));
+        dto.setRecommended(top10.subList(newestSize, newestSize + recommendedSize).stream().map(e -> articleUtil.buildShortArticle(e, ArticleCategory.WOMEN)).collect(Collectors.toList()));
 
         return dto;
     }

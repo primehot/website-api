@@ -18,11 +18,8 @@ import java.util.Optional;
  */
 public interface WomanArticleRepository extends PagingAndSortingRepository<WomanArticleEntity, Long> {
 
-    @Query("SELECT n from WomanArticleEntity n where n.creationDate > :dateBefore order by n.timesVisited, n.creationDate")
-    List<WomanArticleEntity> getRecommended(@Param("dateBefore") Timestamp dateBefore, Pageable pageable);
-
-    @Query("SELECT a.mainImage as image from WomanArticleEntity a where a.id = :articleId")
-    Optional<ImageProjection> findArticleImageById(@Param("articleId") long articleId);
+//    @Query("SELECT a.mainImage as image from WomanArticleEntity a where a.id = :articleId")
+//    Optional<ImageProjection> findArticleImageById(@Param("articleId") long articleId);
 
     @Query("Select n from WomanArticleEntity n "
             + "where n.womanTopic = :topicId order by n.creationDate, n.timesVisited")
